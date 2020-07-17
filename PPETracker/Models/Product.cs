@@ -30,5 +30,7 @@ namespace PPETracker.Models
         public int Quantity { get; set; }
 
         public Category Category { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

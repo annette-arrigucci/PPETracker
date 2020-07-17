@@ -9,5 +9,7 @@ namespace PPETracker.Models
         [Required]
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }
