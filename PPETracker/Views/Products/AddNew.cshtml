@@ -1,0 +1,152 @@
+﻿@model PPETracker.ViewModels.CreateProductCommand
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Add New Product</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-controller="Products" asp-action="AddNew" method="post" class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Brand" class="control-label"></label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            @if (Model.PhotoLink != null)
+            {
+                <div class="form-group">
+                    <label asp-for="PhotoLink" class="control-label"></label>
+                    <input asp-for="PhotoLink" class="form-control" />
+                    <span asp-validation-for="PhotoLink" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="File" class="control-label"></label>
+                    <input type="file" name="File" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <input asp-for="Comments" class="form-control" />
+                <span asp-validation-for="Comments" class="text-danger"></span>
+            </div>
+
+            <!--<div class="form-group">
+        <label asp-for="CategoryID" class="control-label"></label>
+        <input asp-for="CategoryID" class="form-control" />
+        <span asp-validation-for="CategoryID" class="text-danger"></span>
+    </div>-->
+
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label><br />
+                <select asp-for="CategoryID" asp-items="Model.CategorySelections">
+                    <option value="0">--Select category--</option>
+                </select>
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
+            </div>
+
+            <div id="mask-fields" style="display: none;">
+                <div class="form-group">
+                    <label asp-for="MaskType" class="control-label"></label>
+                    <input asp-for="MaskType" class="form-control" />
+                    <span asp-validation-for="MaskType" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="optional" hidden>
+                <div class="form-group">
+                    <label asp-for="CanisterType" class="control-label"></label>
+                    <input asp-for="CanisterType" class="form-control" />
+                    <span asp-validation-for="CanisterType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GasMaskAssociatedWith" class="control-label"></label>
+                    <input asp-for="GasMaskAssociatedWith" class="form-control" />
+                    <span asp-validation-for="GasMaskAssociatedWith" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GloveQuantity" class="control-label"></label>
+                    <input asp-for="GloveQuantity" class="form-control" />
+                    <span asp-validation-for="GloveQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GloveSize" class="control-label"></label>
+                    <input asp-for="GloveSize" class="form-control" />
+                    <span asp-validation-for="GloveSize" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GloveThickness" class="control-label"></label>
+                    <input asp-for="GloveThickness" class="form-control" />
+                    <span asp-validation-for="GloveThickness" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GogglesType" class="control-label"></label>
+                    <input asp-for="GogglesType" class="form-control" />
+                    <span asp-validation-for="GogglesType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NumOunces" class="control-label"></label>
+                    <input asp-for="NumOunces" class="form-control" />
+                    <span asp-validation-for="NumOunces" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SanitizerType" class="control-label"></label>
+                    <input asp-for="SanitizerType" class="form-control" />
+                    <span asp-validation-for="SanitizerType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="WipeQuantity" class="control-label"></label>
+                    <input asp-for="WipeQuantity" class="form-control" />
+                    <span asp-validation-for="WipeQuantity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+        document.getElementById("CategoryID").addEventListener("change", showFields);
+
+        function showFields() {
+            var elem = document.getElementById("CategoryID");
+            var catID = parseInt(elem.value);
+            if (catID == 5) {
+                var maskFields = document.getElementById("mask-fields");
+                maskFields.style.display = "block";
+            }
+        }
+
+    </script>
+}

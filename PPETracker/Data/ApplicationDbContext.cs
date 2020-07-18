@@ -14,6 +14,7 @@ namespace PPETracker.Data
         {
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Canister> Canisters { get; set; }
         public DbSet<GasMask> GasMasks { get; set; }
         public DbSet<Gloves> Gloves { get; set; }

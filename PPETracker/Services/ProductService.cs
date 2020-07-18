@@ -11,13 +11,21 @@ namespace PPETracker.Services
     public class ProductService
     {
         readonly ApplicationDbContext _context;
+        readonly CategoryService _categoryService;
 
-        public ProductService(ApplicationDbContext context)
+        public ProductService(ApplicationDbContext context, CategoryService categoryService)
         {
             _context = context;
+            _categoryService = categoryService;
         }
 
-        //TODO: Method to create a view model for creating a new product
+        //Method to create a view model for creating a new product
+        public CreateProductCommand CreateProductInitialize()
+        {
+            CreateProductCommand prod = new CreateProductCommand();
+            prod.CategorySelections = _categoryService.GetCategoryList();
+            return prod;
+        }
 
         //TODO: Method to create a new product
         /// <summary>
