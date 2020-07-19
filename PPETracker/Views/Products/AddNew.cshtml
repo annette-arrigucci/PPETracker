@@ -1,7 +1,7 @@
 ﻿@model PPETracker.ViewModels.CreateProductCommand
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add New Product";
 }
 
 <h1>Add New Product</h1>
@@ -60,7 +60,7 @@
 
             <div class="form-group">
                 <label asp-for="CategoryID" class="control-label"></label><br />
-                <select asp-for="CategoryID" asp-items="Model.CategorySelections">
+                <select asp-for="CategoryID" asp-items="Model.CategoryOptions">
                     <option value="0">--Select category--</option>
                 </select>
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
@@ -68,9 +68,20 @@
 
             <div id="mask-fields" style="display: none;">
                 <div class="form-group">
-                    <label asp-for="MaskType" class="control-label"></label>
-                    <input asp-for="MaskType" class="form-control" />
+                    <label asp-for="MaskType" class="control-label"></label><br />
+                    <!---<input asp-for="MaskType" class="form-control" />-->
+                    <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
+                        <option value="0">--Select mask type--</option>
+                    </select>
                     <span asp-validation-for="MaskType" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="mask-enter-type" style="display: none;">
+                <div class="form-group">
+                    <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                    <input asp-for="UserEnteredMaskType" class="form-control" />
+                    <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
                 </div>
             </div>
 
@@ -144,6 +155,17 @@
             var catID = parseInt(elem.value);
             if (catID == 5) {
                 var maskFields = document.getElementById("mask-fields");
+                maskFields.style.display = "block";
+            }
+        }
+
+        document.getElementById("MaskType").addEventListener("change", checkForOther);
+
+        function checkForOther() {
+            var elem = document.getElementById("MaskType");
+            var option = elem.value;
+            if (option == "Other") {
+                var maskFields = document.getElementById("mask-enter-type");
                 maskFields.style.display = "block";
             }
         }
