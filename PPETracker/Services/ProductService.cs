@@ -36,15 +36,22 @@ namespace PPETracker.Services
         /// </summary>
         /// <param name="cmd"></param>
         /// <returns>The id of the new product</returns>
-        /*public int CreateProduct(CreateProductCommand model)
+        public int CreateProduct(CreateProductCommand model)
         {
             //get the model data
             //based on the category of the product, create and return the appropriate object
             //add the object to the appropriate table
-            //if(model.CategoryID == 5){
+            if(model.CategoryID == 5){
                 //create a new object of type Mask
                 //add this object to the database
+                MaskConcreteFactory maskFactory = new MaskConcreteFactory();
+                Mask maskToAdd = (Mask)maskFactory.MakeProduct(model);
+                _context.Masks.Add(maskToAdd);
+                _context.SaveChanges();
+
+                return maskToAdd.ID;
             }
-        }*/
+            return 0;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace PPETracker.Models
 {
     public class MaskConcreteFactory : ProductAbstractFactory
     {
-        protected override Product MakeProduct(CreateProductCommand model)
+        public override Product MakeProduct(CreateProductCommand model)
         {
             Mask maskModel = new Mask
             {
@@ -16,7 +16,6 @@ namespace PPETracker.Models
                 CategoryID = model.CategoryID,
                 Comments = model.Comments,
                 DateCreated = DateTime.Now,
-                Description = model.Description,
                 IsActive = true,
                 MaskType = model.MaskType,
                 Name = model.Name,

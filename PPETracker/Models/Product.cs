@@ -13,9 +13,6 @@ namespace PPETracker.Models
 
         public int CategoryID { get; set; }
 
-        [StringLength(100)]
-        public string Description { get; set; }
-
         [StringLength(50)]
         public string PhotoLink { get; set; }
 

@@ -23,12 +23,6 @@
                 <span asp-validation-for="Brand" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
             @if (Model.PhotoLink != null)
             {
                 <div class="form-group">
@@ -48,7 +42,7 @@
 
             <div class="form-group">
                 <label asp-for="Comments" class="control-label"></label>
-                <input asp-for="Comments" class="form-control" />
+                <textarea asp-for="Comments" class="form-control"></textarea>
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
 
@@ -61,29 +55,54 @@
             <div class="form-group">
                 <label asp-for="CategoryID" class="control-label"></label><br />
                 <select asp-for="CategoryID" asp-items="Model.CategoryOptions">
-                    <option value="0">--Select category--</option>
-                </select>
+                    <option value="" disabled selected>--Select category--</option>
+                </select><br />
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
-
-            <div id="mask-fields" style="display: none;">
-                <div class="form-group">
-                    <label asp-for="MaskType" class="control-label"></label><br />
-                    <!---<input asp-for="MaskType" class="form-control" />-->
-                    <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
-                        <option value="0">--Select mask type--</option>
-                    </select>
-                    <span asp-validation-for="MaskType" class="text-danger"></span>
+            <!--if category has already been selected (if form is being redisplayed after validation), show the mask type options-->
+            @if (Model.CategoryID == 5)
+            {
+                <div id="mask-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="MaskType" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
+                            <option value="" disabled selected>--Select mask type--</option>
+                        </select>
+                        <span asp-validation-for="MaskType" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div id="mask-enter-type" style="display: none;">
-                <div class="form-group">
-                    <label asp-for="UserEnteredMaskType" class="control-label"></label>
-                    <input asp-for="UserEnteredMaskType" class="form-control" />
-                    <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
+                <div id="mask-enter-type" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                        <input asp-for="UserEnteredMaskType" class="form-control" />
+                        <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div id="mask-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="MaskType" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
+                            <option value="" disabled selected>--Select mask type--</option>
+                        </select>
+                        <span asp-validation-for="MaskType" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div id="mask-enter-type" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                        <input asp-for="UserEnteredMaskType" class="form-control" />
+                        <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
 
             <div id="optional" hidden>
                 <div class="form-group">

@@ -55,8 +55,19 @@ namespace PPETracker.Controllers
             //i.e. user has selected a mask type if this is in the Mask category
             if(model.CategoryID == 5)
             {
-                //TODO: check that the mask type has been selected
-                //TODO: if the user selected to enter a new type, validate that the entered mask is not null
+                //check that the mask type has been selected
+                if(model.MaskType == null)
+                {
+                    ModelState.AddModelError("MaskType", "Mask type must be selected");
+                }
+                //if the user selected to enter a new type, validate that the entered mask is not null
+                if(model.MaskType == "Other")
+                {
+                    if(model.UserEnteredMaskType == null)
+                    {
+                        ModelState.AddModelError("MaskType", "Invalid data entered for mask type.");
+                    }
+                }
             }
 
             if (ModelState.IsValid)
@@ -72,7 +83,7 @@ namespace PPETracker.Controllers
                     var fileExtension = Path.GetExtension(model.File.FileName);
                     var newFileName = trimFileName + "_" + uniqueFileId + fileExtension;
                     //get absolute path for file save
-                    var absPath = Path.Combine(_environment.WebRootPath, "ImageUploads", newFileName);
+                    var absPath = Path.Combine(_environment.WebRootPath, "uploads", newFileName);
                     //relative path to store in folder in database
                     model.PhotoLink = "/uploads/" + newFileName;
                     using (FileStream fs = new FileStream(absPath, FileMode.Create))
@@ -84,6 +95,8 @@ namespace PPETracker.Controllers
                 _service.CreateProduct(model);
                 return RedirectToAction("Index", "Home");
             }
+            //TODO: need to figure out how to get dropdown options for categories and mask types
+            //call Product service or category service
             return View(model);
         }
     }

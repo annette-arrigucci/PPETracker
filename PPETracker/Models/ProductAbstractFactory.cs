@@ -8,6 +8,6 @@ namespace PPETracker.Models
 {
     public abstract class ProductAbstractFactory
     {
-        protected abstract Product MakeProduct(CreateProductCommand model);
+        public abstract Product MakeProduct(CreateProductCommand model);
     }
 }
