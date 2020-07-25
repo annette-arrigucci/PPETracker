@@ -13,11 +13,13 @@ namespace PPETracker.Controllers
     public class ProductsController : Controller
     {
         public ProductService _service;
+        public CategoryService _catService;
         private readonly IWebHostEnvironment _environment;
 
-        public ProductsController(ProductService service, IWebHostEnvironment environment)
+        public ProductsController(ProductService service, CategoryService catService, IWebHostEnvironment environment)
         {
             _service = service;
+            _catService = catService;
             _environment = environment;
         }
 
@@ -53,6 +55,19 @@ namespace PPETracker.Controllers
             }
             //do checks here for data that is required for certain categories, 
             //i.e. user has selected a mask type if this is in the Mask category
+            if(model.CategoryID == 4)
+            {
+                //check that sanitizer type has been selected
+                if(model.SanitizerType == null)
+                {
+                    ModelState.AddModelError("SanitizerType", "Sanitizer Type must be selected");
+                }
+                if(model.NumOunces == null)
+                {
+                    ModelState.AddModelError("NumOunces", "Number of ounces is required");
+                }
+            }
+
             if(model.CategoryID == 5)
             {
                 //check that the mask type has been selected
@@ -65,7 +80,7 @@ namespace PPETracker.Controllers
                 {
                     if(model.UserEnteredMaskType == null)
                     {
-                        ModelState.AddModelError("MaskType", "Invalid data entered for mask type.");
+                        ModelState.AddModelError("UserEnteredMaskType", "Invalid data entered for mask type.");
                     }
                 }
             }
@@ -95,8 +110,11 @@ namespace PPETracker.Controllers
                 _service.CreateProduct(model);
                 return RedirectToAction("Index", "Home");
             }
-            //TODO: need to figure out how to get dropdown options for categories and mask types
-            //call Product service or category service
+            //get dropdown options for categories and category-specific types
+            model.CategoryOptions = _catService.GetCategoryList();
+            model.SanitizerTypeOptions = _catService.GetSanitizerTypeOptions();
+            model.MaskTypeOptions = _catService.GetMaskTypeOptions();
+
             return View(model);
         }
     }

@@ -1,34 +1,26 @@
 ﻿using PPETracker.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PPETracker.Models
 {
-    public class MaskConcreteFactory : ProductAbstractFactory
+    public class HandSanitizerConcreteFactory : ProductAbstractFactory
     {
         public override Product MakeProduct(CreateProductCommand model)
-        {
-            //if the user entered a new mask type, make that the Mask Type entry
-            if(model.MaskType == "Other")
-            {
-                model.MaskType = model.UserEnteredMaskType;
-            }
-
-            Mask maskModel = new Mask
+        {           
+            HandSanitizer handSanitizerModel = new HandSanitizer
             {
                 Brand = model.Brand,
                 CategoryID = model.CategoryID,
                 Comments = model.Comments,
                 DateCreated = DateTime.Now,
                 IsActive = true,
-                MaskType = model.MaskType,
+                SanitizerType = model.SanitizerType,
+                NumOunces = (int)model.NumOunces,
                 Name = model.Name,
                 PhotoLink = model.PhotoLink,
                 Quantity = 0
             };
-            return maskModel;
+            return handSanitizerModel;
         }
     }
 }

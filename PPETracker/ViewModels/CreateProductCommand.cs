@@ -39,12 +39,36 @@ namespace PPETracker.ViewModels
         public string Comments { get; set; }
         public string CanisterType { get; set; }
         public string GasMaskAssociatedWith { get; set; }
+
+        [DisplayName("Glove Quantity")]
+        [Range(0, 1000)]
         public int? GloveQuantity { get; set; }
+
+        [DisplayName("Glove Size")]
         public string GloveSize { get; set; }
+
+        [DisplayName("Glove Size")]
+        public List<SelectListItem> GloveSizeOptions { get; set; }
+
+        [StringLength(30, MinimumLength = 3)]
+        [DisplayName("Enter new Glove Size")]
+        public string UserEnteredGloveSize { get; set; }
+
+        [DisplayName("Glove thickness (mm)")]
+        [Range(4, 14)]
         public int? GloveThickness { get; set; }
+
         public string GogglesType { get; set; }
+
+        [DisplayName("Number of ounces")]
+        [Range(0, 128)]
         public int? NumOunces { get; set; }
+
+        [DisplayName("Sanitizer Type")]
         public string SanitizerType { get; set; }
+
+        [DisplayName("Sanitizer Type")]
+        public List<SelectListItem> SanitizerTypeOptions { get; set; }
 
         [DisplayName("Mask Type")]
         public string MaskType { get; set; }

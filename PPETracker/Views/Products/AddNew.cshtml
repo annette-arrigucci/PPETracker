@@ -46,12 +46,6 @@
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
 
-            <!--<div class="form-group">
-        <label asp-for="CategoryID" class="control-label"></label>
-        <input asp-for="CategoryID" class="form-control" />
-        <span asp-validation-for="CategoryID" class="text-danger"></span>
-    </div>-->
-
             <div class="form-group">
                 <label asp-for="CategoryID" class="control-label"></label><br />
                 <select asp-for="CategoryID" asp-items="Model.CategoryOptions">
@@ -59,7 +53,129 @@
                 </select><br />
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
-            <!--if category has already been selected (if form is being redisplayed after validation), show the mask type options-->
+
+            <!--if category has already been selected (if form is being redisplayed after validation), show the options for that type-->
+            @if (Model.CategoryID == 3)
+            {
+                <div id="glove-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="GloveQuantity" class="control-label"></label>
+                        <input asp-for="GloveQuantity" class="form-control" />
+                        <span asp-validation-for="GloveQuantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveThickness" class="control-label"></label>
+                        <input asp-for="GloveThickness" class="form-control" />
+                        <span asp-validation-for="GloveThickness" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveSize" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="GloveSize" asp-items="Model.GloveSizeOptions">
+                            <option value="" disabled selected>--Select glove size--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GloveSize" class="text-danger"></span>
+                    </div>
+                </div>
+                @if (Model.GloveSize == "Other")
+                {
+                    <div id='glove-enter-size' style='display: block;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                            <input asp-for="UserEnteredGloveSize" class="form-control" />
+                            <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id='glove-enter-size' style='display: none;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                            <input asp-for="UserEnteredGloveSize" class="form-control" />
+                            <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div id="glove-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="GloveQuantity" class="control-label"></label>
+                        <input asp-for="GloveQuantity" class="form-control" />
+                        <span asp-validation-for="GloveQuantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveThickness" class="control-label"></label>
+                        <input asp-for="GloveThickness" class="form-control" />
+                        <span asp-validation-for="GloveThickness" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveSize" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="GloveSize" asp-items="Model.GloveSizeOptions">
+                            <option value="" disabled selected>--Select glove size--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GloveSize" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div id='glove-enter-size' style='display: none;'>
+                    <div class="form-group">
+                        <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                        <input asp-for="UserEnteredGloveSize" class="form-control" />
+                        <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                    </div>
+                </div>
+            }
+
+
+            @if (Model.CategoryID == 4)
+            {
+                <div id="sanitizer-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="SanitizerType" class="control-label"></label><br />
+                        <select asp-for="SanitizerType" asp-items="Model.SanitizerTypeOptions">
+                            <option value="" disabled selected>--Select sanitizer type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="SanitizerType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NumOunces" class="control-label"></label>
+                        <input asp-for="NumOunces" class="form-control" />
+                        <span asp-validation-for="NumOunces" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="sanitizer-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="SanitizerType" class="control-label"></label><br />
+                        <select asp-for="SanitizerType" asp-items="Model.SanitizerTypeOptions">
+                            <option value="" disabled selected>--Select sanitizer type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="SanitizerType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NumOunces" class="control-label"></label>
+                        <input asp-for="NumOunces" class="form-control" />
+                        <span asp-validation-for="NumOunces" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
             @if (Model.CategoryID == 5)
             {
                 <div id="mask-fields" style="display: block;">
@@ -69,17 +185,30 @@
                         <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
                             <option value="" disabled selected>--Select mask type--</option>
                         </select>
+                        <br />
                         <span asp-validation-for="MaskType" class="text-danger"></span>
                     </div>
                 </div>
-
-                <div id="mask-enter-type" style="display: block;">
-                    <div class="form-group">
-                        <label asp-for="UserEnteredMaskType" class="control-label"></label>
-                        <input asp-for="UserEnteredMaskType" class="form-control" />
-                        <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
+                @if (Model.MaskType == "Other")
+                {
+                    <div id='mask-enter-type' style='display: block;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                            <input asp-for="UserEnteredMaskType" class="form-control" />
+                            <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div id='mask-enter-type' style='display: none;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                            <input asp-for="UserEnteredMaskType" class="form-control" />
+                            <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
+                        </div>
+                    </div>
+                }
             }
             else
             {
@@ -98,7 +227,7 @@
                     <div class="form-group">
                         <label asp-for="UserEnteredMaskType" class="control-label"></label>
                         <input asp-for="UserEnteredMaskType" class="form-control" />
-                        <span asp-validation-for="UserEnteredMaskType" class="text-danger"></span>
+                        <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
                     </div>
                 </div>
             }
@@ -115,36 +244,14 @@
                     <input asp-for="GasMaskAssociatedWith" class="form-control" />
                     <span asp-validation-for="GasMaskAssociatedWith" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="GloveQuantity" class="control-label"></label>
-                    <input asp-for="GloveQuantity" class="form-control" />
-                    <span asp-validation-for="GloveQuantity" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="GloveSize" class="control-label"></label>
-                    <input asp-for="GloveSize" class="form-control" />
-                    <span asp-validation-for="GloveSize" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="GloveThickness" class="control-label"></label>
-                    <input asp-for="GloveThickness" class="form-control" />
-                    <span asp-validation-for="GloveThickness" class="text-danger"></span>
-                </div>
+
                 <div class="form-group">
                     <label asp-for="GogglesType" class="control-label"></label>
                     <input asp-for="GogglesType" class="form-control" />
                     <span asp-validation-for="GogglesType" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="NumOunces" class="control-label"></label>
-                    <input asp-for="NumOunces" class="form-control" />
-                    <span asp-validation-for="NumOunces" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="SanitizerType" class="control-label"></label>
-                    <input asp-for="SanitizerType" class="form-control" />
-                    <span asp-validation-for="SanitizerType" class="text-danger"></span>
-                </div>
+
+
 
                 <div class="form-group">
                     <label asp-for="WipeQuantity" class="control-label"></label>
@@ -156,7 +263,7 @@
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-    </div>
+        </div>
 </div>
 
 <div>
@@ -172,21 +279,79 @@
         function showFields() {
             var elem = document.getElementById("CategoryID");
             var catID = parseInt(elem.value);
-            if (catID == 5) {
+            if (catID == 3) {
+                var gloveFields = document.getElementById("glove-fields");
+                hideFieldsOtherThanSelected("glove-fields");
+                gloveFields.style.display = "block";
+            }
+            if (catID == 4) {
+                var sanitizerFields = document.getElementById("sanitizer-fields");
+                hideFieldsOtherThanSelected("sanitizer-fields");
+                sanitizerFields.style.display = "block";
+            }
+            if(catID == 5) {
                 var maskFields = document.getElementById("mask-fields");
+                hideFieldsOtherThanSelected("mask-fields");
                 maskFields.style.display = "block";
             }
         }
 
-        document.getElementById("MaskType").addEventListener("change", checkForOther);
+        function hideFieldsOtherThanSelected(IdNameForSelected) {
+            var categoryBlocks = ["glove-fields", "sanitizer-fields", "mask-fields"];
+            //hide the fields other than the selected ones
+            const index = categoryBlocks.indexOf(IdNameForSelected);
+            if (index > -1) {
+                categoryBlocks.splice(index, 1);
+            }
+            for (var i = 0; i < categoryBlocks.length; i++) {
+                //hide each DOM element that is identified by the name in the array
+                var idDiv = document.getElementById(categoryBlocks[i]);
+                idDiv.style.display = "none";
+            }
+        }
 
-        function checkForOther() {
+        document.getElementById("MaskType").addEventListener("change", showOrHideMaskTextBox);
+
+        function showOrHideMaskTextBox() {
             var elem = document.getElementById("MaskType");
             var option = elem.value;
             if (option == "Other") {
                 var maskFields = document.getElementById("mask-enter-type");
                 maskFields.style.display = "block";
             }
+            //if another option is selected, clear any text entered and hide the text box
+            else {
+                var maskFields = document.getElementById("mask-enter-type");
+                var maskInputTextBox = document.getElementById("UserEnteredMaskType");
+                maskInputTextBox.value = "";
+                maskFields.style.display = "none";
+            }
+
+            //if validation message is showing, hide it since user has now selected a value
+            var maskTypeEntry = document.getElementById("val-for-mask-type-enter");
+            maskTypeEntry.style.display = "none";
+        }
+
+        document.getElementById("GloveSize").addEventListener("change", showOrHideGloveTextBox);
+
+        function showOrHideGloveTextBox() {
+            var elem = document.getElementById("GloveSize");
+            var option = elem.value;
+            if (option == "Other") {
+                var gloveEnterField = document.getElementById("glove-enter-size");
+                gloveEnterField.style.display = "block";
+            }
+            //if another option is selected, clear any text entered and hide the text box
+            else {
+                var gloveEnterField = document.getElementById("glove-enter-size");
+                var gloveInputTextBox = document.getElementById("UserEnteredGloveSize");
+                gloveInputTextBox.value = "";
+                gloveEnterField.style.display = "none";
+            }
+
+            //if validation message is showing, hide it since user has now selected a value
+            var gloveTypeEntry = document.getElementById("val-for-glove-size-enter");
+            gloveTypeEntry.style.display = "none";
         }
 
     </script>

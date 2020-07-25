@@ -28,6 +28,8 @@ namespace PPETracker.Services
             CreateProductCommand prod = new CreateProductCommand();
             prod.CategoryOptions = _categoryService.GetCategoryList();
             prod.MaskTypeOptions = _categoryService.GetMaskTypeOptions();
+            prod.SanitizerTypeOptions = _categoryService.GetSanitizerTypeOptions();
+            prod.GloveSizeOptions = _categoryService.GetGloveSizeOptions();
             return prod;
         }
 
@@ -41,6 +43,16 @@ namespace PPETracker.Services
             //get the model data
             //based on the category of the product, create and return the appropriate object
             //add the object to the appropriate table
+            if(model.CategoryID == 4)
+            {
+                HandSanitizerConcreteFactory sanFactory = new HandSanitizerConcreteFactory();
+                HandSanitizer sanToAdd = (HandSanitizer)sanFactory.MakeProduct(model);
+                _context.HandSanitizers.Add(sanToAdd);
+                _context.SaveChanges();
+
+                return sanToAdd.ID;
+            }
+
             if(model.CategoryID == 5){
                 //create a new object of type Mask
                 //add this object to the database

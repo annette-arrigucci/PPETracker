@@ -28,42 +28,104 @@ namespace PPETracker.Services
             return listToReturn;
         }
 
+        //method that will return Glove Size options to select from
+        public List<SelectListItem> GetGloveSizeOptions()
+        {
+            List<SelectListItem> gloveSizeList = new List<SelectListItem>();
+            List<string> allGloveSizeList = new List<string>();
+
+            List<string> gloveSizeReferenceList = new List<string>
+            {
+                "S", "M", "L", "XL", "L/XL", "Fits most"
+            };
+
+            //get mask types from the Products table to see if users entered a new type to be included on the list
+            List<string> gloveSizeListFromDB = _context.Gloves.Select(p => p.GloveSize).Distinct().ToList();
+
+            if (gloveSizeListFromDB.Count != 0)
+            {
+                //merge mask types from the two lists
+                allGloveSizeList = gloveSizeReferenceList.Union(gloveSizeListFromDB).ToList();
+            }
+            else
+            {
+                allGloveSizeList = gloveSizeReferenceList;
+            }
+
+            foreach (var gloveSize in allGloveSizeList)
+            {
+                SelectListItem item = new SelectListItem
+                {
+                    Text = gloveSize,
+                    Value = gloveSize
+                };
+                gloveSizeList.Add(item);
+            }
+
+            //put "Other" at the end of the list
+            SelectListItem otherItem = new SelectListItem
+            {
+                Text = "Other",
+                Value = "Other"
+            };
+            gloveSizeList.Add(otherItem);
+
+            return gloveSizeList;
+        }
+
+        //method that will return Sanitizer Type options to select from
+        public List<SelectListItem> GetSanitizerTypeOptions()
+        {
+            List<SelectListItem> sanTypeList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Gel", Value = "Gel" },
+                new SelectListItem { Text = "Spray", Value = "Spray" }
+            };
+            return sanTypeList;
+        }
+
         //method that will return Mask Type options to select from
         public List<SelectListItem> GetMaskTypeOptions()
         {
-            List<SelectListItem> maskList = new List<SelectListItem>
+            List<SelectListItem> maskList = new List<SelectListItem>();
+            List<string> allMaskTypeList = new List<string>();
+            
+            List<string> maskTypeReferenceList = new List<string>
             {
-                new SelectListItem
-                {
-                    Text = "N-95",
-                    Value = "N-95"
-                },
-                new SelectListItem
-                {
-                    Text = "KN-95",
-                    Value = "KN-95"
-                },
-                new SelectListItem
-                {
-                    Text = "KF-94",
-                    Value = "KF-94"
-                },
-                new SelectListItem
-                {
-                    Text = "Surgical",
-                    Value = "Surgical"
-                },
-                new SelectListItem
-                {
-                    Text = "Cloth",
-                    Value = "Cloth"
-                },
-                new SelectListItem
-                {
-                    Text = "Other",
-                    Value = "Other"
-                }
+                "N-95", "KN-95", "KF-94", "Surgical", "Cloth"
             };
+
+            //get mask types from the Products table to see if users entered a new type to be included on the list
+            List<string> maskTypeListFromDB = _context.Masks.Select(p => p.MaskType).Distinct().ToList();
+
+            if(maskTypeListFromDB.Count != 0)
+            {
+                //merge mask types from the two lists
+                allMaskTypeList = maskTypeReferenceList.Union(maskTypeListFromDB).ToList();
+            }
+            else
+            {
+                allMaskTypeList = maskTypeReferenceList;
+            }
+
+            foreach(var maskType in allMaskTypeList)
+            {
+                SelectListItem item = new SelectListItem
+                {
+                    Text = maskType,
+                    Value = maskType
+                };
+                maskList.Add(item);
+            }
+
+            //put "Other" at the end of the list
+            SelectListItem otherItem = new SelectListItem
+            {
+                Text = "Other",
+                Value = "Other"
+            };
+            maskList.Add(otherItem);
+
             return maskList;
         }
     }
