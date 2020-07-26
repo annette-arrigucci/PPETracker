@@ -39,23 +39,58 @@ namespace PPETracker.Controllers
             {  //check the file name to make sure its an image                 
                 var ext = Path.GetExtension(model.File.FileName).ToLower();
                 if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".gif" && ext != ".bmp")
-                    ModelState.AddModelError("PhotoLink", "Invalid Format");
+                    ModelState.AddModelError("File", "Invalid Format");
 
                 //make sure the file name is less than 50 characters
                 if (model.File.FileName.Length >= 50)
                 {
-                    ModelState.AddModelError("PhotoLink", "File name too long");
+                    ModelState.AddModelError("File", "File name too long");
                 }
 
                 //make sure the file is less than 2MB
                 if (model.File.Length > 2000000)
                 {
-                    ModelState.AddModelError("PhotoLink", "File must be less than 2MB");
+                    ModelState.AddModelError("File", "File must be less than 2MB");
                 }
             }
-            //do checks here for data that is required for certain categories, 
-            //i.e. user has selected a mask type if this is in the Mask category
-            if(model.CategoryID == 4)
+            //do checks here for data that is required for certain categories
+            //Gas mask checks
+            if (model.CategoryID == 2)
+            {
+                //check that gas mask type has been selected
+                if (model.GasMaskType == null)
+                {
+                    ModelState.AddModelError("GasMaskType", "Gas Mask Type must be selected");
+                }
+            }
+
+            //Glove checks
+            if (model.CategoryID == 3)
+            {
+                //glove thickness is not required - can be null
+
+                if(model.GloveQuantity == null)
+                {
+                    ModelState.AddModelError("GloveQuantity", "Glove Quantity is required");
+                }
+
+                //check that the glove size has been selected
+                if (model.GloveSize == null)
+                {
+                    ModelState.AddModelError("GloveSize", "Glove Size must be selected");
+                }
+                //if the user selected to enter a new size, validate that the entered size is not null
+                if(model.GloveSize == "Other")
+                {
+                    if(model.UserEnteredGloveSize == null)
+                    {
+                        ModelState.AddModelError("UserEnteredGloveSize", "Please enter a glove size.");
+                    }
+                }
+            }
+
+            //Hand Sanitizer checks
+            if (model.CategoryID == 4)
             {
                 //check that sanitizer type has been selected
                 if(model.SanitizerType == null)
@@ -68,6 +103,7 @@ namespace PPETracker.Controllers
                 }
             }
 
+            //Mask checks
             if(model.CategoryID == 5)
             {
                 //check that the mask type has been selected
@@ -80,8 +116,28 @@ namespace PPETracker.Controllers
                 {
                     if(model.UserEnteredMaskType == null)
                     {
-                        ModelState.AddModelError("UserEnteredMaskType", "Invalid data entered for mask type.");
+                        ModelState.AddModelError("UserEnteredMaskType", "Please enter a mask type.");
                     }
+                }
+            }
+
+            //Wipes checks
+            if (model.CategoryID == 6)
+            {
+                //check that wipe quantity has been entered
+                if (model.WipeQuantity == null)
+                {
+                    ModelState.AddModelError("WipeQuantity", "Wipe Quantity is required");
+                }
+            }
+
+            //Goggles checks
+            if (model.CategoryID == 7)
+            {
+                //check that goggles type has been selected
+                if (model.GogglesType == null)
+                {
+                    ModelState.AddModelError("GogglesType", "Goggles Type must be selected");
                 }
             }
 
@@ -114,6 +170,11 @@ namespace PPETracker.Controllers
             model.CategoryOptions = _catService.GetCategoryList();
             model.SanitizerTypeOptions = _catService.GetSanitizerTypeOptions();
             model.MaskTypeOptions = _catService.GetMaskTypeOptions();
+            model.GloveSizeOptions = _catService.GetGloveSizeOptions();
+            model.GoggleTypeOptions = _catService.GetGoggleTypeOptions();
+            model.GasMaskTypeOptions = _catService.GetGasMaskTypeOptions();
+            model.CanisterTypeOptions = _catService.GetCanisterTypeOptions();
+            model.GasMaskAssociatedWithOptions = _catService.GetGasMaskAssociatedWithOptions();
 
             return View(model);
         }

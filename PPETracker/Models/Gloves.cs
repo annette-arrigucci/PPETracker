@@ -6,9 +6,9 @@ namespace PPETracker.Models
     {
         public int GloveQuantity { get; set; }
 
-        [StringLength(10, MinimumLength = 3)]
+        [StringLength(10, MinimumLength = 1)]
         public string GloveSize { get; set; }
 
-        public int GloveThickness { get; set; }
+        public int? GloveThickness { get; set; }
     }
 }

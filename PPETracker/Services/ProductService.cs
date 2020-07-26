@@ -30,6 +30,11 @@ namespace PPETracker.Services
             prod.MaskTypeOptions = _categoryService.GetMaskTypeOptions();
             prod.SanitizerTypeOptions = _categoryService.GetSanitizerTypeOptions();
             prod.GloveSizeOptions = _categoryService.GetGloveSizeOptions();
+            prod.GoggleTypeOptions = _categoryService.GetGoggleTypeOptions();
+            prod.GasMaskTypeOptions = _categoryService.GetGasMaskTypeOptions();
+            prod.CanisterTypeOptions = _categoryService.GetCanisterTypeOptions();
+            prod.GasMaskAssociatedWithOptions = _categoryService.GetGasMaskAssociatedWithOptions();
+            
             return prod;
         }
 
@@ -43,7 +48,28 @@ namespace PPETracker.Services
             //get the model data
             //based on the category of the product, create and return the appropriate object
             //add the object to the appropriate table
-            if(model.CategoryID == 4)
+            if (model.CategoryID == 2)
+            {
+                GasMaskConcreteFactory gasMaskFactory = new GasMaskConcreteFactory();
+                GasMask gasMaskToAdd = (GasMask)gasMaskFactory.MakeProduct(model);
+                _context.GasMasks.Add(gasMaskToAdd);
+                _context.SaveChanges();
+
+                return gasMaskToAdd.ID;
+            }
+
+            if (model.CategoryID == 3)
+            {
+                GlovesConcreteFactory glovesFactory = new GlovesConcreteFactory();
+                Gloves glovesToAdd = (Gloves)glovesFactory.MakeProduct(model);
+                _context.Gloves.Add(glovesToAdd);
+                _context.SaveChanges();
+
+                return glovesToAdd.ID;
+            }
+
+
+            if (model.CategoryID == 4)
             {
                 HandSanitizerConcreteFactory sanFactory = new HandSanitizerConcreteFactory();
                 HandSanitizer sanToAdd = (HandSanitizer)sanFactory.MakeProduct(model);
@@ -63,6 +89,31 @@ namespace PPETracker.Services
 
                 return maskToAdd.ID;
             }
+
+            if (model.CategoryID == 6)
+            {
+                //create a new object of type Wipes
+                //add this object to the database
+                WipesConcreteFactory wipesFactory = new WipesConcreteFactory();
+                Wipes wipesToAdd = (Wipes)wipesFactory.MakeProduct(model);
+                _context.Wipes.Add(wipesToAdd);
+                _context.SaveChanges();
+
+                return wipesToAdd.ID;
+            }
+
+            if (model.CategoryID == 7)
+            {
+                //create a new object of type Goggles
+                //add this object to the database
+                GogglesConcreteFactory gogglesFactory = new GogglesConcreteFactory();
+                Goggles gogglesToAdd = (Goggles)gogglesFactory.MakeProduct(model);
+                _context.Goggles.Add(gogglesToAdd);
+                _context.SaveChanges();
+
+                return gogglesToAdd.ID;
+            }
+
             return 0;
         }
     }

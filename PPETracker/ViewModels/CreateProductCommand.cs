@@ -37,8 +37,28 @@ namespace PPETracker.ViewModels
         [DisplayName("Comments (optional)")]
         [StringLength(100)]
         public string Comments { get; set; }
+
+        [DisplayName("Canister Type")]
         public string CanisterType { get; set; }
+
+        [DisplayName("Canister Type")]
+        public List<SelectListItem> CanisterTypeOptions { get; set; }
+
+        [DisplayName("Gas Mask Type")]
+        public string GasMaskType { get; set; }
+
+        [DisplayName("Gas Mask Type")]
+        public List<SelectListItem> GasMaskTypeOptions { get; set; }
+
+        [DisplayName("Gas mask this canister is associated with")]
         public string GasMaskAssociatedWith { get; set; }
+
+        [DisplayName("Gas mask this canister is associated with")]
+        public List<SelectListItem> GasMaskAssociatedWithOptions { get; set; }
+
+        [StringLength(30, MinimumLength = 3)]
+        [DisplayName("Enter Gas Mask name")]
+        public string UserEnteredGasMaskAssociatedWith { get; set; }
 
         [DisplayName("Glove Quantity")]
         [Range(0, 1000)]
@@ -50,15 +70,19 @@ namespace PPETracker.ViewModels
         [DisplayName("Glove Size")]
         public List<SelectListItem> GloveSizeOptions { get; set; }
 
-        [StringLength(30, MinimumLength = 3)]
+        [StringLength(30, MinimumLength = 1)]
         [DisplayName("Enter new Glove Size")]
         public string UserEnteredGloveSize { get; set; }
 
-        [DisplayName("Glove thickness (mm)")]
+        [DisplayName("Glove thickness (mm) (optional)")]
         [Range(4, 14)]
         public int? GloveThickness { get; set; }
 
+        [DisplayName("Goggles Type")]
         public string GogglesType { get; set; }
+
+        [DisplayName("Goggles Type")]
+        public List<SelectListItem> GoggleTypeOptions { get; set; }
 
         [DisplayName("Number of ounces")]
         [Range(0, 128)]
@@ -77,6 +101,9 @@ namespace PPETracker.ViewModels
         [DisplayName("Enter new Mask Type")]
         public string UserEnteredMaskType { get; set; }
         public List<SelectListItem> MaskTypeOptions { get; set; }
+
+        [DisplayName("Wipe Quantity")]
+        [Range(0, 1000)]
         public int? WipeQuantity { get; set; }
 
     }

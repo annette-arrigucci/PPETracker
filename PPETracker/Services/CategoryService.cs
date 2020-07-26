@@ -28,6 +28,74 @@ namespace PPETracker.Services
             return listToReturn;
         }
 
+        //method that will return Canister Type options to select from
+        public List<SelectListItem> GetCanisterTypeOptions()
+        {
+            List<SelectListItem> canisterTypeList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Air Purifying", Value = "Air Purifying" },
+                new SelectListItem { Text = "Chemical Protective", Value = "Chemical Protective" }
+            };
+            return canisterTypeList;
+        }
+
+        //method that will return list of Gas Masks in database that user can associate a canister with
+        public List<SelectListItem> GetGasMaskAssociatedWithOptions()
+        {
+            List<SelectListItem> gasMaskList = new List<SelectListItem>();
+            List<string> allGasMaskList = new List<string>();
+
+            //get mask types from the Products table to see if users entered a new type to be included on the list
+            List<string> gasMaskListFromDB = _context.GasMasks.Where(p => p.IsActive == true).Select(p => p.Name).Distinct().ToList();
+
+            //if there are gas masks in DB, form a list of SelectListItems from items in the list
+            if (gasMaskListFromDB.Count != 0)
+            {
+                foreach (var gasMask in gasMaskListFromDB)
+                {
+                    SelectListItem item = new SelectListItem
+                    {
+                        Text = gasMask,
+                        Value = gasMask
+                    };
+                    gasMaskList.Add(item);
+                }
+
+                //put "Other" at the end of the list
+                SelectListItem otherItem = new SelectListItem
+                {
+                    Text = "Other",
+                    Value = "Other"
+                };
+            }
+
+            //if no gas masks in DB, a list with count of 0 will be returned
+
+            return gasMaskList;
+        }
+
+        //method that will return Gas Mask Type options to select from
+        public List<SelectListItem> GetGasMaskTypeOptions()
+        {
+            List<SelectListItem> gasMaskTypeList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Half-respirator", Value = "Half-respirator" },
+                new SelectListItem { Text = "Full-respirator", Value = "Full-respirator" }
+            };
+            return gasMaskTypeList;
+        }
+
+        //method that will return Goggle Type options to select from
+        public List<SelectListItem> GetGoggleTypeOptions()
+        {
+            List<SelectListItem> goggleTypeList = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Safety Glasses", Value = "Safety Glasses" },
+                new SelectListItem { Text = "Sealable", Value = "Sealable" }
+            };
+            return goggleTypeList;
+        }
+
         //method that will return Glove Size options to select from
         public List<SelectListItem> GetGloveSizeOptions()
         {
@@ -96,7 +164,7 @@ namespace PPETracker.Services
             };
 
             //get mask types from the Products table to see if users entered a new type to be included on the list
-            List<string> maskTypeListFromDB = _context.Masks.Select(p => p.MaskType).Distinct().ToList();
+            List<string> maskTypeListFromDB = _context.Masks.Where(p => p.IsActive == true).Select(p => p.MaskType).Distinct().ToList();
 
             if(maskTypeListFromDB.Count != 0)
             {
