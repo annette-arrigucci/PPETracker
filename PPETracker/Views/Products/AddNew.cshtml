@@ -548,7 +548,7 @@
         document.getElementById("GasMaskAssociatedWith").addEventListener("change", showOrHideGasMaskAssociatedTextBox);
 
         function showOrHideGasMaskAssociatedTextBox() {
-            var elem = document.getElementById("showOrHideGasMaskAssociatedTextBox");
+            var elem = document.getElementById("GasMaskAssociatedWith");
             var option = elem.value;
             if (option == "Other") {
                 var gasMaskAssociatedEnterField = document.getElementById("gas-mask-associated-enter");
@@ -559,7 +559,7 @@
                 var gasMaskAssociatedEnterField = document.getElementById("gas-mask-associated-enter");
                 var gasMaskAssociatedWithInputTextBox = document.getElementById("UserEnteredGasMaskAssociatedWith");
                 gasMaskAssociatedWithInputTextBox.value = "";
-                gasMaskAssociatedWithInputTextBox.style.display = "none";
+                gasMaskAssociatedEnterField.style.display = "none";
             }
 
             //if validation message is showing, hide it since user has now selected a value

@@ -22,6 +22,28 @@ namespace PPETracker.Services
             _categoryService = categoryService;
         }
 
+        //Method to return list of products for dashboard
+        public List<ProductSummaryViewModel> GetProducts()
+        {
+            var results = _context.Products.Where(p => p.IsActive == true)
+                .Select(p => new ProductSummaryViewModel {
+                    ID = p.ID,
+                    CategoryID = p.CategoryID,
+                    Name = p.Name,
+                    Brand = p.Brand,
+                    PhotoLink = p.PhotoLink,
+                    Quantity = p.Quantity
+            });
+            var resultList = results.ToList();
+            foreach(var r in resultList)
+            {
+                //look up category name
+                var categoryName = _categoryService.GetCategoryName(r.CategoryID);
+                r.CategoryName = categoryName;
+            }
+            return resultList;
+        }
+
         //Method to create a view model for creating a new product
         public CreateProductCommand CreateProductInitialize()
         {
@@ -48,6 +70,16 @@ namespace PPETracker.Services
             //get the model data
             //based on the category of the product, create and return the appropriate object
             //add the object to the appropriate table
+            if(model.CategoryID == 1)
+            {
+                CanisterConcreteFactory canisterFactory = new CanisterConcreteFactory();
+                Canister canisterToAdd = (Canister)canisterFactory.MakeProduct(model);
+                _context.Canisters.Add(canisterToAdd);
+                _context.SaveChanges();
+
+                return canisterToAdd.ID;
+            }
+
             if (model.CategoryID == 2)
             {
                 GasMaskConcreteFactory gasMaskFactory = new GasMaskConcreteFactory();

@@ -66,7 +66,7 @@ namespace PPETracker
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Products}/{action=Dashboard}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

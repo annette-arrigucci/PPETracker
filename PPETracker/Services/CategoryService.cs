@@ -10,7 +10,7 @@ namespace PPETracker.Services
     public class CategoryService
     {
         readonly ApplicationDbContext _context;
-
+        string[] categoryArray = { "Canister", "Gas Mask", "Gloves", "Hand Sanitizer", "Mask", "Wipes", "Goggles" };
 
         public CategoryService(ApplicationDbContext context)
         {
@@ -67,6 +67,7 @@ namespace PPETracker.Services
                     Text = "Other",
                     Value = "Other"
                 };
+                gasMaskList.Add(otherItem);
             }
 
             //if no gas masks in DB, a list with count of 0 will be returned
@@ -195,6 +196,13 @@ namespace PPETracker.Services
             maskList.Add(otherItem);
 
             return maskList;
+        }
+
+        //method that returns category name given a category ID
+        public string GetCategoryName(int categoryID)
+        {
+            int catIndex = categoryID - 1;
+            return categoryArray[catIndex];
         }
     }
 }

@@ -24,6 +24,14 @@ namespace PPETracker.Controllers
         }
 
         [HttpGet]
+        public IActionResult Dashboard()
+        {
+            var model = _service.GetProducts();
+            return View(model);
+        }
+
+
+        [HttpGet]
         public IActionResult AddNew()
         {
             var model = _service.CreateProductInitialize();
@@ -54,6 +62,41 @@ namespace PPETracker.Controllers
                 }
             }
             //do checks here for data that is required for certain categories
+            //Gas mask canister checks
+            if(model.CategoryID == 1)
+            {
+                //check that canister type has been selected
+                if(model.CanisterType == null)
+                {
+                    ModelState.AddModelError("CanisterType", "Canister type must be selected");
+                }
+
+                //check options for gas mask type
+                var gasMaskTypeList = _catService.GetGasMaskAssociatedWithOptions();
+                if(gasMaskTypeList.Count > 0)
+                {
+                    //check that gas mask associated with option has been selected
+                    if (model.GasMaskAssociatedWith == null && model.UserEnteredGasMaskAssociatedWith == null)
+                    {
+                        ModelState.AddModelError("GasMaskAssociatedWith", "Must select or enter an associated gas mask");
+                    }
+
+                    //if "other" was selected for gas mask, check that user entered text in text box
+                    if (model.GasMaskAssociatedWith == "Other" && model.UserEnteredGasMaskAssociatedWith == null)
+                    {
+                        ModelState.AddModelError("UserEnteredGasMaskAssociatedWith", "Must enter a gas mask name");
+                    }
+                }
+                else
+                {
+                    //if no dropdown for gas mask type, check that user entered a gas mask name
+                    if(model.UserEnteredGasMaskAssociatedWith == null)
+                    {
+                        ModelState.AddModelError("UserEnteredGasMaskAssociatedWith", "Must enter a gas mask name");
+                    }
+                }
+            }
+
             //Gas mask checks
             if (model.CategoryID == 2)
             {
