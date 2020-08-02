@@ -8,6 +8,11 @@ namespace PPETracker.Models
 {
     public class MaskConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             //if the user entered a new mask type, make that the Mask Type entry

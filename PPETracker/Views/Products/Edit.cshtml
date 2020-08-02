@@ -1,0 +1,571 @@
+﻿@model PPETracker.ViewModels.CreateProductCommand
+
+@{
+    ViewData["Title"] = "Add New Product";
+}
+
+<h1>Add New Product</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-controller="Products" asp-action="AddNew" method="post" class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Brand" class="control-label"></label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+
+            @if (Model.PhotoLink != null)
+            {
+                <div class="form-group">
+                    <label asp-for="PhotoLink" class="control-label"></label>
+                    <input asp-for="PhotoLink" class="form-control" /><br />
+                    <span asp-validation-for="PhotoLink" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="File" class="control-label"></label>
+                    <input type="file" name="File" /><br />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <textarea asp-for="Comments" class="form-control"></textarea>
+                <span asp-validation-for="Comments" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryID" class="control-label"></label><br />
+                <select asp-for="CategoryID" asp-items="Model.CategoryOptions">
+                    <option value="" disabled selected>--Select category--</option>
+                </select><br />
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
+            </div>
+
+            <!--if category has already been selected (if form is being redisplayed after validation), show the options for that type-->
+            @if (Model.CategoryID == 1)
+            {
+                <!--if there are entries in the dropdown, display select input-->
+                @if (Model.GasMaskAssociatedWithOptions.Count > 0)
+                {
+                    <div id="canister-fields" style="display: block;">
+                        <div class="form-group">
+                            <label asp-for="CanisterType" class="control-label"></label><br />
+                            <select asp-for="CanisterType" asp-items="Model.CanisterTypeOptions">
+                                <option value="" disabled selected>--Select canister type--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="CanisterType" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="GasMaskAssociatedWith" class="control-label"></label><br />
+                            <select asp-for="GasMaskAssociatedWith" asp-items="Model.GasMaskAssociatedWithOptions">
+                                <option value="" disabled selected>--Select gas mask--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="GasMaskAssociatedWith" class="text-danger"></span>
+                        </div>
+                        @if (Model.GasMaskAssociatedWith == "Other")
+                        {
+                            <div id='gas-mask-associated-enter' style='display: block;'>
+                                <div class="form-group">
+                                    <label asp-for="UserEnteredGasMaskAssociatedWith" class="control-label"></label>
+                                    <input asp-for="UserEnteredGasMaskAssociatedWith" class="form-control" />
+                                    <span asp-validation-for="UserEnteredGasMaskAssociatedWith" class="text-danger" id="val-for-gas-mask-associated-enter"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div id='gas-mask-associated-enter' style='display: none;'>
+                                <div class="form-group">
+                                    <label asp-for="UserEnteredGasMaskAssociatedWith" class="control-label"></label>
+                                    <input asp-for="UserEnteredGasMaskAssociatedWith" class="form-control" />
+                                    <span asp-validation-for="UserEnteredGasMaskAssociatedWith" class="text-danger" id="val-for-gas-mask-associated-enter"></span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div id="canister-fields" style="display: block;">
+                        <div class="form-group">
+                            <label asp-for="CanisterType" class="control-label"></label><br />
+                            <select asp-for="CanisterType" asp-items="Model.CanisterTypeOptions">
+                                <option value="" disabled selected>--Select canister type--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="CanisterType" class="text-danger"></span>
+                        </div>
+
+                        <!--display text box input if no gas masks are already in database to select from-->
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGasMaskAssociatedWith" class="control-label"></label>
+                            <input asp-for="UserEnteredGasMaskAssociatedWith" class="form-control" />
+                            <span asp-validation-for="UserEnteredGasMaskAssociatedWith" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!--if there are entries in the dropdown, display select input-->
+                @if (Model.GasMaskAssociatedWithOptions.Count > 0)
+                {
+                    <div id="canister-fields" style="display: none;">
+                        <div class="form-group">
+                            <label asp-for="CanisterType" class="control-label"></label><br />
+                            <select asp-for="CanisterType" asp-items="Model.CanisterTypeOptions">
+                                <option value="" disabled selected>--Select canister type--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="CanisterType" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="GasMaskAssociatedWith" class="control-label"></label><br />
+                            <select asp-for="GasMaskAssociatedWith" asp-items="Model.GasMaskAssociatedWithOptions">
+                                <option value="" disabled selected>--Select gas mask--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="GasMaskAssociatedWith" class="text-danger"></span>
+                        </div>
+
+                        <div id='gas-mask-associated-enter' style='display: none;'>
+                            <div class="form-group">
+                                <label asp-for="UserEnteredGasMaskAssociatedWith" class="control-label"></label>
+                                <input asp-for="UserEnteredGasMaskAssociatedWith" class="form-control" />
+                                <span asp-validation-for="UserEnteredGasMaskAssociatedWith" class="text-danger" id="val-for-gas-mask-associated-enter"></span>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="canister-fields" style="display: none;">
+                        <div class="form-group">
+                            <label asp-for="CanisterType" class="control-label"></label><br />
+                            <select asp-for="CanisterType" asp-items="Model.CanisterTypeOptions">
+                                <option value="" disabled selected>--Select canister type--</option>
+                            </select>
+                            <br />
+                            <span asp-validation-for="CanisterType" class="text-danger"></span>
+                        </div>
+
+                        <!--display text box input if no gas masks are already in database to select from-->
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGasMaskAssociatedWith" class="control-label"></label>
+                            <input asp-for="UserEnteredGasMaskAssociatedWith" class="form-control" />
+                            <span asp-validation-for="UserEnteredGasMaskAssociatedWith" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
+            }
+
+
+            @if (Model.CategoryID == 2)
+            {
+                <div id="gas-mask-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="GasMaskType" class="control-label"></label><br />
+                        <select asp-for="GasMaskType" asp-items="Model.GasMaskTypeOptions">
+                            <option value="" disabled selected>--Select gas mask type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GasMaskType" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="gas-mask-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="GasMaskType" class="control-label"></label><br />
+                        <select asp-for="GasMaskType" asp-items="Model.GasMaskTypeOptions">
+                            <option value="" disabled selected>--Select gas mask type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GasMaskType" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+
+            @if (Model.CategoryID == 3)
+            {
+                <div id="glove-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="GloveQuantity" class="control-label"></label>
+                        <input asp-for="GloveQuantity" class="form-control" />
+                        <span asp-validation-for="GloveQuantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveThickness" class="control-label"></label>
+                        <input asp-for="GloveThickness" class="form-control" />
+                        <span asp-validation-for="GloveThickness" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveSize" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="GloveSize" asp-items="Model.GloveSizeOptions">
+                            <option value="" disabled selected>--Select glove size--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GloveSize" class="text-danger"></span>
+                    </div>
+                </div>
+                @if (Model.GloveSize == "Other")
+                {
+                    <div id='glove-enter-size' style='display: block;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                            <input asp-for="UserEnteredGloveSize" class="form-control" />
+                            <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id='glove-enter-size' style='display: none;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                            <input asp-for="UserEnteredGloveSize" class="form-control" />
+                            <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div id="glove-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="GloveQuantity" class="control-label"></label>
+                        <input asp-for="GloveQuantity" class="form-control" />
+                        <span asp-validation-for="GloveQuantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveThickness" class="control-label"></label>
+                        <input asp-for="GloveThickness" class="form-control" />
+                        <span asp-validation-for="GloveThickness" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GloveSize" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="GloveSize" asp-items="Model.GloveSizeOptions">
+                            <option value="" disabled selected>--Select glove size--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GloveSize" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div id='glove-enter-size' style='display: none;'>
+                    <div class="form-group">
+                        <label asp-for="UserEnteredGloveSize" class="control-label"></label>
+                        <input asp-for="UserEnteredGloveSize" class="form-control" />
+                        <span asp-validation-for="UserEnteredGloveSize" class="text-danger" id="val-for-glove-size-enter"></span>
+                    </div>
+                </div>
+            }
+
+
+            @if (Model.CategoryID == 4)
+            {
+                <div id="sanitizer-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="SanitizerType" class="control-label"></label><br />
+                        <select asp-for="SanitizerType" asp-items="Model.SanitizerTypeOptions">
+                            <option value="" disabled selected>--Select sanitizer type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="SanitizerType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NumOunces" class="control-label"></label>
+                        <input asp-for="NumOunces" class="form-control" />
+                        <span asp-validation-for="NumOunces" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="sanitizer-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="SanitizerType" class="control-label"></label><br />
+                        <select asp-for="SanitizerType" asp-items="Model.SanitizerTypeOptions">
+                            <option value="" disabled selected>--Select sanitizer type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="SanitizerType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NumOunces" class="control-label"></label>
+                        <input asp-for="NumOunces" class="form-control" />
+                        <span asp-validation-for="NumOunces" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+            @if (Model.CategoryID == 5)
+            {
+                <div id="mask-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="MaskType" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
+                            <option value="" disabled selected>--Select mask type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="MaskType" class="text-danger"></span>
+                    </div>
+                </div>
+                @if (Model.MaskType == "Other")
+                {
+                    <div id='mask-enter-type' style='display: block;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                            <input asp-for="UserEnteredMaskType" class="form-control" />
+                            <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id='mask-enter-type' style='display: none;'>
+                        <div class="form-group">
+                            <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                            <input asp-for="UserEnteredMaskType" class="form-control" />
+                            <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div id="mask-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="MaskType" class="control-label"></label><br />
+                        <!---<input asp-for="MaskType" class="form-control" />-->
+                        <select asp-for="MaskType" asp-items="Model.MaskTypeOptions">
+                            <option value="" disabled selected>--Select mask type--</option>
+                        </select>
+                        <span asp-validation-for="MaskType" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div id="mask-enter-type" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="UserEnteredMaskType" class="control-label"></label>
+                        <input asp-for="UserEnteredMaskType" class="form-control" />
+                        <span asp-validation-for="UserEnteredMaskType" class="text-danger" id="val-for-mask-type-enter"></span>
+                    </div>
+                </div>
+            }
+
+            @if (Model.CategoryID == 6)
+            {
+                <div id="wipe-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="WipeQuantity" class="control-label"></label>
+                        <input asp-for="WipeQuantity" class="form-control" />
+                        <span asp-validation-for="WipeQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="wipe-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="WipeQuantity" class="control-label"></label>
+                        <input asp-for="WipeQuantity" class="form-control" />
+                        <span asp-validation-for="WipeQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+            @if (Model.CategoryID == 7)
+            {
+                <div id="goggle-fields" style="display: block;">
+                    <div class="form-group">
+                        <label asp-for="GogglesType" class="control-label"></label><br />
+                        <select asp-for="GogglesType" asp-items="Model.GoggleTypeOptions">
+                            <option value="" disabled selected>--Select goggles type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GogglesType" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="goggle-fields" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="GogglesType" class="control-label"></label><br />
+                        <select asp-for="GogglesType" asp-items="Model.GoggleTypeOptions">
+                            <option value="" disabled selected>--Select goggles type--</option>
+                        </select>
+                        <br />
+                        <span asp-validation-for="GogglesType" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+        document.getElementById("CategoryID").addEventListener("change", showFields);
+
+        function showFields() {
+            var elem = document.getElementById("CategoryID");
+            var catID = parseInt(elem.value);
+            if (catID == 1) {
+                var canisterFields = document.getElementById("canister-fields");
+                hideFieldsOtherThanSelected("canister-fields");
+                canisterFields.style.display = "block";
+            }
+            if (catID == 2) {
+                var gasMaskFields = document.getElementById("gas-mask-fields");
+                hideFieldsOtherThanSelected("gas-mask-fields");
+                gasMaskFields.style.display = "block";
+            }
+            if (catID == 3) {
+                var gloveFields = document.getElementById("glove-fields");
+                hideFieldsOtherThanSelected("glove-fields");
+                gloveFields.style.display = "block";
+            }
+            if (catID == 4) {
+                var sanitizerFields = document.getElementById("sanitizer-fields");
+                hideFieldsOtherThanSelected("sanitizer-fields");
+                sanitizerFields.style.display = "block";
+            }
+            if(catID == 5) {
+                var maskFields = document.getElementById("mask-fields");
+                hideFieldsOtherThanSelected("mask-fields");
+                maskFields.style.display = "block";
+            }
+            if (catID == 6) {
+                var wipeFields = document.getElementById("wipe-fields");
+                hideFieldsOtherThanSelected("wipe-fields");
+                wipeFields.style.display = "block";
+            }
+            if (catID == 7) {
+                var goggleFields = document.getElementById("goggle-fields");
+                hideFieldsOtherThanSelected("goggle-fields");
+                goggleFields.style.display = "block";
+            }
+        }
+
+        function hideFieldsOtherThanSelected(IdNameForSelected) {
+            var categoryBlocks = ["canister-fields", "gas-mask-fields", "glove-fields", "sanitizer-fields", "mask-fields", "wipe-fields", "goggle-fields"];
+            //hide the fields other than the selected ones
+            const index = categoryBlocks.indexOf(IdNameForSelected);
+            if (index > -1) {
+                categoryBlocks.splice(index, 1);
+            }
+            for (var i = 0; i < categoryBlocks.length; i++) {
+                //hide each DOM element that is identified by the name in the array
+                var idDiv = document.getElementById(categoryBlocks[i]);
+                idDiv.style.display = "none";
+            }
+        }
+
+        document.getElementById("MaskType").addEventListener("change", showOrHideMaskTextBox);
+
+        function showOrHideMaskTextBox() {
+            var elem = document.getElementById("MaskType");
+            var option = elem.value;
+            if (option == "Other") {
+                var maskFields = document.getElementById("mask-enter-type");
+                maskFields.style.display = "block";
+            }
+            //if another option is selected, clear any text entered and hide the text box
+            else {
+                var maskFields = document.getElementById("mask-enter-type");
+                var maskInputTextBox = document.getElementById("UserEnteredMaskType");
+                maskInputTextBox.value = "";
+                maskFields.style.display = "none";
+            }
+
+            //if validation message is showing, hide it since user has now selected a value
+            var maskTypeEntry = document.getElementById("val-for-mask-type-enter");
+            maskTypeEntry.style.display = "none";
+        }
+
+        document.getElementById("GloveSize").addEventListener("change", showOrHideGloveTextBox);
+
+        function showOrHideGloveTextBox() {
+            var elem = document.getElementById("GloveSize");
+            var option = elem.value;
+            if (option == "Other") {
+                var gloveEnterField = document.getElementById("glove-enter-size");
+                gloveEnterField.style.display = "block";
+            }
+            //if another option is selected, clear any text entered and hide the text box
+            else {
+                var gloveEnterField = document.getElementById("glove-enter-size");
+                var gloveInputTextBox = document.getElementById("UserEnteredGloveSize");
+                gloveInputTextBox.value = "";
+                gloveEnterField.style.display = "none";
+            }
+
+            //if validation message is showing, hide it since user has now selected a value
+            var gloveTypeEntry = document.getElementById("val-for-glove-size-enter");
+            gloveTypeEntry.style.display = "none";
+        }
+
+        document.getElementById("GasMaskAssociatedWith").addEventListener("change", showOrHideGasMaskAssociatedTextBox);
+
+        function showOrHideGasMaskAssociatedTextBox() {
+            var elem = document.getElementById("GasMaskAssociatedWith");
+            var option = elem.value;
+            if (option == "Other") {
+                var gasMaskAssociatedEnterField = document.getElementById("gas-mask-associated-enter");
+                gasMaskAssociatedEnterField.style.display = "block";
+            }
+            //if another option is selected, clear any text entered and hide the text box
+            else {
+                var gasMaskAssociatedEnterField = document.getElementById("gas-mask-associated-enter");
+                var gasMaskAssociatedWithInputTextBox = document.getElementById("UserEnteredGasMaskAssociatedWith");
+                gasMaskAssociatedWithInputTextBox.value = "";
+                gasMaskAssociatedEnterField.style.display = "none";
+            }
+
+            //if validation message is showing, hide it since user has now selected a value
+            var gasMaskAssociatedValEntry = document.getElementById("val-for-gas-mask-associated-enter");
+            gasMaskAssociatedValEntry.style.display = "none";
+        }
+
+    </script>
+}

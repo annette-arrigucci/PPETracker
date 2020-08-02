@@ -5,6 +5,11 @@ namespace PPETracker.Models
 {
     public class HandSanitizerConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {           
             HandSanitizer handSanitizerModel = new HandSanitizer

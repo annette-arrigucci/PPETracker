@@ -8,6 +8,11 @@ namespace PPETracker.Models
 {
     public class CanisterConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             //if the user did not choose a gas mask option from the list, assume they entered 

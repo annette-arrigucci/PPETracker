@@ -5,6 +5,11 @@ namespace PPETracker.Models
 {
     public class GogglesConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             Goggles gogglesModel = new Goggles

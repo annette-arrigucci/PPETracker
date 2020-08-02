@@ -8,6 +8,11 @@ namespace PPETracker.Models
 {
     public class WipesConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             Wipes wipesModel = new Wipes

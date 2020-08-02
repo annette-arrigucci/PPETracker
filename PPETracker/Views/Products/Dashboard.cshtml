@@ -4,23 +4,26 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
 <h1>Dashboard</h1>
 
 <p>
-    <a asp-action="AddNew">Add New</a>
+    <a asp-action="AddNew" class="btn btn-sm btn-success">Add New</a>
 </p>
-<table class="table">
+<table class="table" id="ppe-table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PhotoLink)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CategoryName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhotoLink)
-            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Brand)
             </th>
@@ -31,29 +34,44 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhotoLink)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.PhotoLink" width="100" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brand)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                    @Html.ActionLink("Edit", "EditQuantity", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary", @style = "margin-left: 10px;" })
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
+                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
+                    @Html.ActionLink("Delete", "Delete", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript" charset="utf8">
+        $(document).ready(function () {
+            $('#ppe-table').DataTable({
+                "order": [[1, "asc"]]
+            });
+        });
+    </script>
+   
+}

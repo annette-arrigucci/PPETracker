@@ -8,6 +8,11 @@ namespace PPETracker.Models
 {
     public class GlovesConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             //if the user entered a new glove size type, make that the Glove Size entry

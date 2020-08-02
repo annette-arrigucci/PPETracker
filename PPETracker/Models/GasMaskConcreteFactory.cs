@@ -8,6 +8,11 @@ namespace PPETracker.Models
 {
     public class GasMaskConcreteFactory : ProductAbstractFactory
     {
+        public override UpdateProductCommand MakeEditViewModel(int productID)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Product MakeProduct(CreateProductCommand model)
         {
             GasMask gasMaskModel = new GasMask

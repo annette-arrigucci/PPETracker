@@ -201,8 +201,15 @@ namespace PPETracker.Services
         //method that returns category name given a category ID
         public string GetCategoryName(int categoryID)
         {
-            int catIndex = categoryID - 1;
-            return categoryArray[catIndex];
+            try
+            {
+                int catIndex = categoryID - 1;
+                return categoryArray[catIndex];
+            }
+            catch
+            {
+                throw new Exception("Cannot find category name");
+            }
         }
     }
 }

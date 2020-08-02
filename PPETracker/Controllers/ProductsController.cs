@@ -221,5 +221,16 @@ namespace PPETracker.Controllers
 
             return View(model);
         }
+
+        /*public IActionResult Edit(int? productID)
+        {
+            if(productID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //get info for product with Product ID
+            var model = _service.GetProductForUpdate((int)productID);
+            return View(model);
+        }*/
     }
 }

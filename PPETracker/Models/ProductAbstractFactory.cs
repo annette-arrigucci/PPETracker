@@ -9,5 +9,6 @@ namespace PPETracker.Models
     public abstract class ProductAbstractFactory
     {
         public abstract Product MakeProduct(CreateProductCommand model);
+        public abstract UpdateProductCommand MakeEditViewModel(int productID);
     }
 }
