@@ -6,14 +6,32 @@ using System.Threading.Tasks;
 
 namespace PPETracker.Models
 {
-    public class CanisterConcreteFactory : ProductAbstractFactory
+    public class CanisterFactory : IFactory
     {
-        public override UpdateProductCommand MakeEditViewModel(int productID)
+        public CategoryName CategoryName => CategoryName.Canister;
+
+        public ProductDetailViewModel MakeDetailViewModel(Product productToDisplay)
+        {
+            Canister canisterProd = (Canister)productToDisplay;
+            ProductDetailViewModel model = new ProductDetailViewModel();
+            model.Name = canisterProd.Name;
+            model.ID = canisterProd.ID;
+            model.Brand = canisterProd.Brand;
+            model.CategoryID = canisterProd.CategoryID;
+            model.CategoryName = "Canister";
+            model.Comments = canisterProd.Comments;
+            model.CanisterType = canisterProd.CanisterType;
+            model.GasMaskAssociatedWith = canisterProd.GasMaskAssociatedWith;
+            model.Quantity = canisterProd.Quantity;
+            return model;
+        }
+
+        public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
             throw new NotImplementedException();
         }
 
-        public override Product MakeProduct(CreateProductCommand model)
+        public Product MakeProduct(CreateProductCommand model)
         {
             //if the user did not choose a gas mask option from the list, assume they entered 
             //a gas mask name
@@ -21,7 +39,7 @@ namespace PPETracker.Models
             {
                 model.GasMaskAssociatedWith = model.UserEnteredGasMaskAssociatedWith;
             }
-            if(model.GasMaskAssociatedWith == null)
+            if (model.GasMaskAssociatedWith == null)
             {
                 model.GasMaskAssociatedWith = model.UserEnteredGasMaskAssociatedWith;
             }

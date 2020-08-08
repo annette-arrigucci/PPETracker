@@ -51,7 +51,7 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
-                    @Html.ActionLink("Edit", "EditQuantity", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary", @style = "margin-left: 10px;" })
+                    <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
@@ -63,7 +63,12 @@
     </tbody>
 </table>
 
+<!-- Product quantity modal goes here -->
+<div id="updateProdQuantity"></div>
+
 @section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
 
     <script type="text/javascript" charset="utf8">
@@ -71,7 +76,26 @@
             $('#ppe-table').DataTable({
                 "order": [[1, "asc"]]
             });
+
+            $(document).keypress(
+                function (event) {
+                    if (event.which == '13') {
+                        event.preventDefault();
+                    }
+                });
         });
+
+        function EditProductQuantity(idNum) {
+            //call controller action to get product details and return partial view
+            var url = '@Url.Action("UpdateProductQuantity", "Products")?productID=' + idNum;
+            $('#updateProdQuantity').load(url,
+                function () {
+                    $.validator.unobtrusive.parse("#updateQuantityModal");
+                    //display modal
+                    $('#updateQuantityModal').modal('show');
+                }
+            );
+        }
     </script>
-   
+
 }

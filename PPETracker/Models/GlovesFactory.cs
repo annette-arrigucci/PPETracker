@@ -6,14 +6,34 @@ using System.Threading.Tasks;
 
 namespace PPETracker.Models
 {
-    public class GlovesConcreteFactory : ProductAbstractFactory
+    public class GlovesFactory : IFactory
     {
-        public override UpdateProductCommand MakeEditViewModel(int productID)
+        public CategoryName CategoryName => CategoryName.Gloves;
+
+        public ProductDetailViewModel MakeDetailViewModel(Product productToDisplay)
+        {
+            Gloves glovesProd = (Gloves)productToDisplay;
+            ProductDetailViewModel model = new ProductDetailViewModel();
+            model.Name = glovesProd.Name;
+            model.ID = glovesProd.ID;
+            model.Brand = glovesProd.Brand;
+            model.CategoryID = glovesProd.CategoryID;
+            model.CategoryName = "Gloves";
+            model.Comments = glovesProd.Comments;
+            model.PhotoLink = glovesProd.PhotoLink;
+            model.GloveQuantity = glovesProd.GloveQuantity;
+            model.GloveSize = glovesProd.GloveSize;
+            model.GloveThickness = glovesProd.GloveThickness;
+            model.Quantity = glovesProd.Quantity;
+            return model;
+        }
+
+        public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
             throw new NotImplementedException();
         }
 
-        public override Product MakeProduct(CreateProductCommand model)
+        public Product MakeProduct(CreateProductCommand model)
         {
             //if the user entered a new glove size type, make that the Glove Size entry
             if (model.GloveSize == "Other")

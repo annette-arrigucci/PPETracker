@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using PPETracker.Models;
 using PPETracker.Services;
 using PPETracker.ViewModels;
 
@@ -232,5 +233,33 @@ namespace PPETracker.Controllers
             var model = _service.GetProductForUpdate((int)productID);
             return View(model);
         }*/
+
+        [HttpGet]
+        public IActionResult UpdateProductQuantity(int? productID)
+        {
+            if (productID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //get info for product with Product ID
+            var model = _service.GetProductDetail((int)productID);
+            return PartialView("_UpdateProductQuantity", model);
+        }
+
+        //Method to handle POST request to update product quantity
+        [HttpPost]
+        public IActionResult UpdateProductQuantity([Bind(nameof(ProductDetailViewModel.ID), nameof(ProductDetailViewModel.Quantity))] ProductDetailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Error", "Invalid data");
+            }
+            else
+            {
+                _service.UpdateProductQuantity(model.ID, model.Quantity);
+                return RedirectToAction("Dashboard");
+            }
+        }
+
     }
 }

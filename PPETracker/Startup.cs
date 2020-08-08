@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using PPETracker.Services;
+using PPETracker.Models;
 
 namespace PPETracker
 {
@@ -36,6 +37,14 @@ namespace PPETracker
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddScoped<IFactoryStrategy, FactoryStrategy>();
+            services.AddScoped<IFactory, CanisterFactory>();
+            services.AddScoped<IFactory, GasMaskFactory>();
+            services.AddScoped<IFactory, GlovesFactory>();
+            services.AddScoped<IFactory, HandSanitizerFactory>();
+            services.AddScoped<IFactory, MaskFactory>();
+            services.AddScoped<IFactory, WipesFactory>();
+            services.AddScoped<IFactory, GogglesFactory>();
             services.AddScoped<ProductService>();
             services.AddScoped<CategoryService>();
         }
