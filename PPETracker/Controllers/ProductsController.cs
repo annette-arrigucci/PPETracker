@@ -224,14 +224,52 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
-        /*public IActionResult Edit(int? productID)
+        public IActionResult Edit(int? ID)
         {
-            if(productID == null)
+            if(ID == null)
             {
                 throw new Exception("Invalid Product ID");
             }
             //get info for product with Product ID
-            var model = _service.GetProductForUpdate((int)productID);
+            var model = _service.GetProductForUpdate((int)ID);
+            return View(model);
+        }
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(UpdateProductCommand model)
+        {
+            //check if product ID is valid
+            string prodStatus = _service.IsProductIDValid(model.ID);
+            if(prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Not active")
+            {
+                throw new Exception("Product not active");
+            }
+            //get old photo link from old version of record
+            string prevPhotoLink = _service.GetPhotoLink(model.ID);
+
+            //check for change in photo link 
+            // - photo link removed
+            if(prevPhotoLink != null && model.PhotoLink == null)
+            {
+                //delete the uploaded photo
+            }
+            // - new photo uploaded to replace old photo
+            if(prevPhotoLink != null && model.File != null)
+            {
+                //delete the old photo
+                //upload the new photo
+            }
+            // - new photo uploaded where previously none had been
+            if(prevPhotoLink == null && model.File != null)
+            {
+                //upload the new photo
+            }
+
             return View(model);
         }*/
 
@@ -249,6 +287,7 @@ namespace PPETracker.Controllers
 
         //Method to handle POST request to update product quantity
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult UpdateProductQuantity([Bind(nameof(ProductDetailViewModel.ID), nameof(ProductDetailViewModel.Quantity))] ProductDetailViewModel model)
         {
             if (!ModelState.IsValid)

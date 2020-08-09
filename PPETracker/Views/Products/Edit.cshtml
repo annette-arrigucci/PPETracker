@@ -1,16 +1,19 @@
-﻿@model PPETracker.ViewModels.CreateProductCommand
+﻿@model PPETracker.ViewModels.UpdateProductCommand
 
 @{
-    ViewData["Title"] = "Add New Product";
+    ViewData["Title"] = "Edit Product";
 }
 
-<h1>Add New Product</h1>
+<h1 class="text-center">Edit Product</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form enctype="multipart/form-data" asp-controller="Products" asp-action="AddNew" method="post" class="form-horizontal">
+        <form enctype="multipart/form-data" asp-controller="Products" asp-action="Edit" method="post" class="form-horizontal">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="ID">
+
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -54,7 +57,7 @@
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
 
-            <!--if category has already been selected (if form is being redisplayed after validation), show the options for that type-->
+            <!--show the options for category type-->
             @if (Model.CategoryID == 1)
             {
                 <!--if there are entries in the dropdown, display select input-->
@@ -431,7 +434,7 @@
             }
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
             </div>
         </form>
     </div>

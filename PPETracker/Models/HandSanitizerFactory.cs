@@ -29,7 +29,17 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            HandSanitizer handSanProd = (HandSanitizer)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = handSanProd.Name;
+            model.ID = handSanProd.ID;
+            model.Brand = handSanProd.Brand;
+            model.CategoryID = handSanProd.CategoryID;
+            model.Comments = handSanProd.Comments;
+            model.PhotoLink = handSanProd.PhotoLink;
+            model.NumOunces = handSanProd.NumOunces;
+            model.SanitizerType = handSanProd.SanitizerType;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

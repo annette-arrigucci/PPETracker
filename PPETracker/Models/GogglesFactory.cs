@@ -26,14 +26,18 @@ namespace PPETracker.Models
             return model;
         }
 
-        public UpdateProductCommand MakeEditViewModel(int productToEdit)
-        {
-            throw new NotImplementedException();
-        }
-
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            Goggles gogglesProd = (Goggles)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = gogglesProd.Name;
+            model.ID = gogglesProd.ID;
+            model.Brand = gogglesProd.Brand;
+            model.CategoryID = gogglesProd.CategoryID;
+            model.Comments = gogglesProd.Comments;
+            model.PhotoLink = gogglesProd.PhotoLink;
+            model.GogglesType = gogglesProd.GogglesType;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

@@ -28,7 +28,16 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            Canister canisterProd = (Canister)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = canisterProd.Name;
+            model.ID = canisterProd.ID;
+            model.Brand = canisterProd.Brand;
+            model.CategoryID = canisterProd.CategoryID;
+            model.Comments = canisterProd.Comments;
+            model.CanisterType = canisterProd.CanisterType;
+            model.GasMaskAssociatedWith = canisterProd.GasMaskAssociatedWith;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

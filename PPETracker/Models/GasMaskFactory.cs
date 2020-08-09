@@ -27,7 +27,15 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            GasMask gasMaskProd = (GasMask)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = gasMaskProd.Name;
+            model.ID = gasMaskProd.ID;
+            model.Brand = gasMaskProd.Brand;
+            model.CategoryID = gasMaskProd.CategoryID;
+            model.Comments = gasMaskProd.Comments;
+            model.GasMaskType = gasMaskProd.GasMaskType;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

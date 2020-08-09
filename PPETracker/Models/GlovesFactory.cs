@@ -30,7 +30,18 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            Gloves glovesProd = (Gloves)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = glovesProd.Name;
+            model.ID = glovesProd.ID;
+            model.Brand = glovesProd.Brand;
+            model.CategoryID = glovesProd.CategoryID;
+            model.Comments = glovesProd.Comments;
+            model.PhotoLink = glovesProd.PhotoLink;
+            model.GloveQuantity = glovesProd.GloveQuantity;
+            model.GloveSize = glovesProd.GloveSize;
+            model.GloveThickness = glovesProd.GloveThickness;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

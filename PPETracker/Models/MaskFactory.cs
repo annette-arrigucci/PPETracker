@@ -28,7 +28,16 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            Mask maskProd = (Mask)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = maskProd.Name;
+            model.ID = maskProd.ID;
+            model.Brand = maskProd.Brand;
+            model.CategoryID = maskProd.CategoryID;
+            model.Comments = maskProd.Comments;
+            model.PhotoLink = maskProd.PhotoLink;
+            model.MaskType = maskProd.MaskType;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)

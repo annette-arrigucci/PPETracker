@@ -161,7 +161,7 @@ namespace PPETracker.Services
             }
         }
 
-        /*public UpdateProductCommand GetProductForUpdate(int productID)
+        public UpdateProductCommand GetProductForUpdate(int productID)
         {
             //look up the product ID
             var itemToEdit = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
@@ -177,17 +177,64 @@ namespace PPETracker.Services
             }
             //get the category
             int categoryID = itemToEdit.CategoryID;
-            
+
+            //initialize a new model
+            UpdateProductCommand model = new UpdateProductCommand();
             //depending on the category, call the method in the appropriate factory class
+            //canister
             if(categoryID == 1)
             {
-                var canisterFactory = new CanisterConcreteFactory();
-
+               model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Canister);
+            }
+            //gas mask
+            else if(categoryID == 2)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.GasMask);
+            }
+            //gloves
+            else if(categoryID == 3)
+            {
+               model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Gloves);
+            }
+            //hand sanitizer
+            else if (categoryID == 4)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.HandSanitizer);
+            }
+            //mask
+            else if (categoryID == 5)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Mask);
+            }
+            //wipes
+            else if (categoryID == 6)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Wipes);
+            }
+            //goggles
+            else if (categoryID == 7)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Goggles);
+            }
+            //throw exception if Category not valid
+            else
+            {
+                throw new Exception("Category not valid");
             }
 
             //add the dropdown information to the model
+            model.CategoryOptions = _categoryService.GetCategoryList();
+            model.MaskTypeOptions = _categoryService.GetMaskTypeOptions();
+            model.SanitizerTypeOptions = _categoryService.GetSanitizerTypeOptions();
+            model.GloveSizeOptions = _categoryService.GetGloveSizeOptions();
+            model.GoggleTypeOptions = _categoryService.GetGoggleTypeOptions();
+            model.GasMaskTypeOptions = _categoryService.GetGasMaskTypeOptions();
+            model.CanisterTypeOptions = _categoryService.GetCanisterTypeOptions();
+            model.GasMaskAssociatedWithOptions = _categoryService.GetGasMaskAssociatedWithOptions();
+
             //return the view model
-        }*/
+            return model;
+        }
 
         public ProductDetailViewModel GetProductDetail(int productID)
         {
@@ -288,6 +335,43 @@ namespace PPETracker.Services
                 Console.WriteLine(e.Message);
                 throw;
             }
+        }
+
+        //returns a string describing status of product
+        public string IsProductIDValid(int productID)
+        {
+            var item = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
+            //if null, throw exception
+            if (item == null)
+            {
+                return "Not found";
+            }
+            //check for IsActive flag
+            else if (item.IsActive == false)
+            {
+                return "Not active";
+            }
+            else
+            {
+                return "Active";
+            }
+        }
+
+        public string GetPhotoLink(int productID)
+        {
+            //check if product ID is valid
+            string prodStatus = IsProductIDValid(productID);
+            if (prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Not active")
+            {
+                throw new Exception("Product not active");
+            }
+            var photoLink = _context.Products.Where(p => p.ID == productID).Select(p => p.PhotoLink).FirstOrDefault();
+            //return field from table - can be null
+            return photoLink;
         }
     }
 }

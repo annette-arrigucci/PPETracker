@@ -28,7 +28,16 @@ namespace PPETracker.Models
 
         public UpdateProductCommand MakeEditViewModel(Product productToEdit)
         {
-            throw new NotImplementedException();
+            Wipes wipesProd = (Wipes)productToEdit;
+            UpdateProductCommand model = new UpdateProductCommand();
+            model.Name = wipesProd.Name;
+            model.ID = wipesProd.ID;
+            model.Brand = wipesProd.Brand;
+            model.CategoryID = wipesProd.CategoryID;
+            model.Comments = wipesProd.Comments;
+            model.PhotoLink = wipesProd.PhotoLink;
+            model.WipeQuantity = wipesProd.WipeQuantity;
+            return model;
         }
 
         public Product MakeProduct(CreateProductCommand model)
