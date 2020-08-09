@@ -28,6 +28,18 @@ namespace PPETracker.Services
             return listToReturn;
         }
 
+        public List<SelectListItem> GetCategoryNamesList()
+        {
+            IEnumerable<SelectListItem> items = _context.Categories.Where(c => c.IsActive == true).
+                Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Name
+                });
+            List<SelectListItem> listToReturn = items.ToList();
+            return listToReturn;
+        }
+
         //method that will return Canister Type options to select from
         public List<SelectListItem> GetCanisterTypeOptions()
         {

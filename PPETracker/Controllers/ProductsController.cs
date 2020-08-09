@@ -28,6 +28,7 @@ namespace PPETracker.Controllers
         public IActionResult Dashboard()
         {
             var model = _service.GetProducts();
+            ViewBag.CategoryOptions = _catService.GetCategoryNamesList();
             return View(model);
         }
 

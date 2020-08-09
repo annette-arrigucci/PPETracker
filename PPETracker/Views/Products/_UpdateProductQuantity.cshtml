@@ -12,18 +12,18 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <h3 style="text-align: center; margin-bottom: 20px !important;">@Model.Name</h3>
                         <div class="row">
-                           <div class="col-sm-6 offset-sm-4">
-                              <h3>@Model.Name</h3>
-                           </div>
+                            <!--<div class="col-sm-6 offset-sm-4">-->
+                            <!--</div>-->
                         </div>
-                        
-                        
+
+
                         <div class="row">
                             @if (Model.PhotoLink != null)
                             {
                                 <div class="col-sm-6">
-                                    <img src="@Model.PhotoLink" style="width: 100%; height: 100%;" />
+                                    <img src="@Model.PhotoLink" style="width: 100%; max-height: 100%;" />
                                 </div>
                             }
                             else
@@ -31,20 +31,20 @@
                                 <div class="col-sm-4"></div>
                             }
                             <div class="col-sm-6">
+                                @Html.HiddenFor(model => model.ID)
                                 <dl>
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.ID)
-                                    </dt>
+                                    <!--<dt>
+                                @@Html.DisplayNameFor(model => model.ID)
+                                </dt>
+                                <dd>
+                                 @@Html.DisplayFor(model => model.ID)
+                                </dd>-->
+                                    @*<dt>
+                                 @Html.DisplayNameFor(model => model.Name)
+                                 </dt>
                                     <dd>
-                                        @Html.DisplayFor(model => model.ID)
-                                        @Html.HiddenFor(model => model.ID)
-                                    </dd>
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.Name)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(model => model.Name)
-                                    </dd>
+                                    @Html.DisplayFor(model => model.Name)
+                                </dd>*@
                                     <dt>
                                         @Html.DisplayNameFor(model => model.CategoryName)
                                     </dt>
@@ -164,13 +164,16 @@
                                         <span asp-validation-for="Quantity" class="text-danger"></span>
                                     </dd>
                                 </dl>
+                                <div style="margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">Update Quantity</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update Quantity</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        
                     </div>
                 </form>
             </div>

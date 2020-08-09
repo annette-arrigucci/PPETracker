@@ -18,7 +18,7 @@ namespace PPETracker.ViewModels
         [DisplayName("Category")]
         public int CategoryID { get; set; }
 
-        [DisplayName("Category Name")]
+        [DisplayName("Category")]
         public string CategoryName { get; set; }
 
         [DisplayName("Image File")]

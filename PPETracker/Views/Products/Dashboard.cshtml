@@ -5,63 +5,85 @@
 }
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-
+<style>
+    .pull-left {
+        float: left !important;
+    }
+</style>
 <h1>Dashboard</h1>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <a asp-action="AddNew" class="btn btn-sm btn-success" style="margin-bottom: 20px !important;">Add New</a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="AddNew" class="btn btn-sm btn-success">Add New</a>
-</p>
-<table class="table" id="ppe-table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PhotoLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
-            </th>
+    <div class="row">
+        <div class="col-sm-6">
+            <label class="control-label">Filter by Category: </label>
+            <select id="categoryDropdown" asp-items="ViewBag.CategoryOptions" style="margin-bottom: 20px;">
+                <option value="" selected>--All--</option>
+            </select><br />
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table" id="ppe-table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PhotoLink)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CategoryName)
+                        </th>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <img src="@item.PhotoLink" width="100" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Brand)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                    <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
-                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
-                    @Html.ActionLink("Delete", "Delete", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Brand)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Quantity)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.PhotoLink" width="100" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Brand)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                                <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Details", "Details", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
+                                @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
+                                @Html.ActionLink("Delete", "Delete", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <!-- Product quantity modal goes here -->
 <div id="updateProdQuantity"></div>
@@ -73,8 +95,9 @@
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
-            $('#ppe-table').DataTable({
-                "order": [[1, "asc"]]
+            var ppeTable = $('#ppe-table').DataTable({
+                "order": [[1, "asc"]],
+                "dom": '<"pull-left"f>ti'
             });
 
             $(document).keypress(
@@ -83,6 +106,14 @@
                         event.preventDefault();
                     }
                 });
+
+            $('#categoryDropdown').on("change", function () {
+                var selectedCat = $('#categoryDropdown').val();
+                ppeTable
+                    .column(2)
+                    .search(selectedCat)
+                    .draw();
+            });
         });
 
         function EditProductQuantity(idNum) {
