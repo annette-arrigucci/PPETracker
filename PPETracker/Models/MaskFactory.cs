@@ -34,6 +34,7 @@ namespace PPETracker.Models
             model.ID = maskProd.ID;
             model.Brand = maskProd.Brand;
             model.CategoryID = maskProd.CategoryID;
+            model.CategoryName = "Mask";
             model.Comments = maskProd.Comments;
             model.PhotoLink = maskProd.PhotoLink;
             model.MaskType = maskProd.MaskType;
@@ -61,6 +62,18 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return maskModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            Mask updatedMask = (Mask)productToUpdate;
+            updatedMask.Brand = model.Brand;
+            updatedMask.Comments = model.Comments;
+            updatedMask.DateModified = DateTime.Now;
+            updatedMask.MaskType = model.MaskType;
+            updatedMask.Name = model.Name;
+            updatedMask.PhotoLink = model.PhotoLink;
+            return updatedMask;
         }
     }
 }

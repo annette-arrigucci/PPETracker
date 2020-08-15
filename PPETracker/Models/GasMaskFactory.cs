@@ -34,8 +34,10 @@ namespace PPETracker.Models
             model.ID = gasMaskProd.ID;
             model.Brand = gasMaskProd.Brand;
             model.CategoryID = gasMaskProd.CategoryID;
+            model.CategoryName = "Gas Mask";
             model.Comments = gasMaskProd.Comments;
             model.GasMaskType = gasMaskProd.GasMaskType;
+            model.PhotoLink = gasMaskProd.PhotoLink;
             return model;
         }
 
@@ -54,6 +56,18 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return gasMaskModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            GasMask updatedGasMask = (GasMask)productToUpdate;
+            updatedGasMask.Brand = model.Brand;
+            updatedGasMask.Comments = model.Comments;
+            updatedGasMask.DateModified = DateTime.Now;
+            updatedGasMask.GasMaskType = model.GasMaskType;
+            updatedGasMask.Name = model.Name;
+            updatedGasMask.PhotoLink = model.PhotoLink;
+            return updatedGasMask;
         }
     }
 }

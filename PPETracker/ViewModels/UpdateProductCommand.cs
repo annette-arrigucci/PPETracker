@@ -21,6 +21,9 @@ namespace PPETracker.ViewModels
         [DisplayName("Category")]
         public int CategoryID { get; set; }
 
+        [DisplayName("Category")]
+        public string CategoryName { get; set; }
+
         //add dropdown data for category
         [DisplayName("Category")]
         public List<SelectListItem> CategoryOptions { get; set; }

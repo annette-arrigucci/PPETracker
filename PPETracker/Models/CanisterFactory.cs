@@ -34,6 +34,8 @@ namespace PPETracker.Models
             model.ID = canisterProd.ID;
             model.Brand = canisterProd.Brand;
             model.CategoryID = canisterProd.CategoryID;
+            model.CategoryName = "Canister";
+            model.PhotoLink = canisterProd.PhotoLink;
             model.Comments = canisterProd.Comments;
             model.CanisterType = canisterProd.CanisterType;
             model.GasMaskAssociatedWith = canisterProd.GasMaskAssociatedWith;
@@ -66,6 +68,29 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return canisterModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            //if the user did not choose a gas mask option from the list, assume they entered 
+            //a gas mask name
+            if (model.GasMaskAssociatedWith == "Other")
+            {
+                model.GasMaskAssociatedWith = model.UserEnteredGasMaskAssociatedWith;
+            }
+            if (model.GasMaskAssociatedWith == null)
+            {
+                model.GasMaskAssociatedWith = model.UserEnteredGasMaskAssociatedWith;
+            }
+            Canister updatedCanister = (Canister)productToUpdate;
+            updatedCanister.Brand = model.Brand;
+            updatedCanister.Comments = model.Comments;
+            updatedCanister.DateModified = DateTime.Now;
+            updatedCanister.CanisterType = model.CanisterType;
+            updatedCanister.GasMaskAssociatedWith = model.GasMaskAssociatedWith;
+            updatedCanister.Name = model.Name;
+            updatedCanister.PhotoLink = model.PhotoLink;
+            return updatedCanister;
         }
     }
 }

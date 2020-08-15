@@ -36,6 +36,7 @@ namespace PPETracker.Models
             model.ID = glovesProd.ID;
             model.Brand = glovesProd.Brand;
             model.CategoryID = glovesProd.CategoryID;
+            model.CategoryName = "Gloves";
             model.Comments = glovesProd.Comments;
             model.PhotoLink = glovesProd.PhotoLink;
             model.GloveQuantity = glovesProd.GloveQuantity;
@@ -67,6 +68,26 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return glovesModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            //if the user entered a new glove size type, make that the Glove Size entry
+            if (model.GloveSize == "Other")
+            {
+                model.GloveSize = model.UserEnteredGloveSize;
+            }
+
+            Gloves updatedGloves = (Gloves)productToUpdate;
+            updatedGloves.Brand = model.Brand;
+            updatedGloves.Comments = model.Comments;
+            updatedGloves.DateModified = DateTime.Now;
+            updatedGloves.GloveQuantity = (int)model.GloveQuantity;
+            updatedGloves.GloveThickness = model.GloveThickness;
+            updatedGloves.GloveSize = model.GloveSize;
+            updatedGloves.Name = model.Name;
+            updatedGloves.PhotoLink = model.PhotoLink;
+            return updatedGloves;
         }
     }
 }

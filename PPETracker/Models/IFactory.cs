@@ -10,6 +10,7 @@ namespace PPETracker.Models
     {
         CategoryName CategoryName { get; }
         Product MakeProduct(CreateProductCommand model);
+        Product UpdateProduct(UpdateProductCommand model, Product productToUpdate);
         UpdateProductCommand MakeEditViewModel(Product productToEdit);
         ProductDetailViewModel MakeDetailViewModel(Product productToDisplay);
     }

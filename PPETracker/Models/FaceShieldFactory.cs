@@ -33,7 +33,9 @@ namespace PPETracker.Models
             model.ID = faceShieldProd.ID;
             model.Brand = faceShieldProd.Brand;
             model.CategoryID = faceShieldProd.CategoryID;
+            model.CategoryName = "Face Shield";
             model.Comments = faceShieldProd.Comments;
+            model.PhotoLink = faceShieldProd.PhotoLink;
             return model;
         }
 
@@ -51,6 +53,17 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return faceShieldModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            FaceShield updatedShield = (FaceShield)productToUpdate;
+            updatedShield.Brand = model.Brand;
+            updatedShield.Comments = model.Comments;
+            updatedShield.DateModified = DateTime.Now;
+            updatedShield.Name = model.Name;
+            updatedShield.PhotoLink = model.PhotoLink;
+            return updatedShield;
         }
     }
 }

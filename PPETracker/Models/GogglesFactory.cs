@@ -34,6 +34,7 @@ namespace PPETracker.Models
             model.ID = gogglesProd.ID;
             model.Brand = gogglesProd.Brand;
             model.CategoryID = gogglesProd.CategoryID;
+            model.CategoryName = "Goggles";
             model.Comments = gogglesProd.Comments;
             model.PhotoLink = gogglesProd.PhotoLink;
             model.GogglesType = gogglesProd.GogglesType;
@@ -55,6 +56,18 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return gogglesModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            Goggles updatedGoggles = (Goggles)productToUpdate;
+            updatedGoggles.Brand = model.Brand;
+            updatedGoggles.Comments = model.Comments;
+            updatedGoggles.DateModified = DateTime.Now;
+            updatedGoggles.GogglesType = model.GogglesType;
+            updatedGoggles.Name = model.Name;
+            updatedGoggles.PhotoLink = model.PhotoLink;
+            return updatedGoggles;
         }
     }
 }

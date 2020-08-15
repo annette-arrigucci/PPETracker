@@ -97,7 +97,8 @@
         $(document).ready(function () {
             var ppeTable = $('#ppe-table').DataTable({
                 "order": [[1, "asc"]],
-                "dom": '<"pull-left"f>ti'
+                "dom": '<"pull-left"f>ti',
+                "paging": false
             });
 
             $(document).keypress(

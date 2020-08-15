@@ -57,8 +57,14 @@ namespace PPETracker.Services
             List<SelectListItem> gasMaskList = new List<SelectListItem>();
             List<string> allGasMaskList = new List<string>();
 
-            //get mask types from the Products table to see if users entered a new type to be included on the list
-            List<string> gasMaskListFromDB = _context.GasMasks.Where(p => p.IsActive == true).Select(p => p.Name).Distinct().ToList();
+            //get gas masks from gas masks entered into tracker
+            List<string> gasMaskListFromGasMasks = _context.GasMasks.Where(p => p.IsActive == true).Select(p => p.Name).Distinct().ToList();
+
+            //get gas masks from gas masks that are associated with canisters
+            List<string> gasMaskListFromCanisters = _context.Canisters.Where(p => p.IsActive == true).Select(p => p.GasMaskAssociatedWith).Distinct().ToList();
+
+            //combine the two lists
+            List<string> gasMaskListFromDB = gasMaskListFromGasMasks.Union(gasMaskListFromCanisters).ToList();
 
             //if there are gas masks in DB, form a list of SelectListItems from items in the list
             if (gasMaskListFromDB.Count != 0)
@@ -83,7 +89,6 @@ namespace PPETracker.Services
             }
 
             //if no gas masks in DB, a list with count of 0 will be returned
-
             return gasMaskList;
         }
 

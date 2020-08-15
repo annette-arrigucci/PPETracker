@@ -29,5 +29,10 @@ namespace PPETracker.Models
         {
             return _factories.FirstOrDefault(x => x.CategoryName == categoryName)?.MakeProduct(model) ?? throw new ArgumentNullException(nameof(categoryName));
         }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate, CategoryName categoryName)
+        {
+            return _factories.FirstOrDefault(x => x.CategoryName == categoryName)?.UpdateProduct(model, productToUpdate) ?? throw new ArgumentNullException(nameof(categoryName));
+        }
     }
 }

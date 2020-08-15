@@ -35,6 +35,7 @@ namespace PPETracker.Models
             model.ID = handSanProd.ID;
             model.Brand = handSanProd.Brand;
             model.CategoryID = handSanProd.CategoryID;
+            model.CategoryName = "Hand Sanitizer";
             model.Comments = handSanProd.Comments;
             model.PhotoLink = handSanProd.PhotoLink;
             model.NumOunces = handSanProd.NumOunces;
@@ -58,6 +59,19 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return handSanitizerModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            HandSanitizer updatedSan = (HandSanitizer)productToUpdate;
+            updatedSan.Brand = model.Brand;
+            updatedSan.Comments = model.Comments;
+            updatedSan.DateModified = DateTime.Now;
+            updatedSan.SanitizerType = model.SanitizerType;
+            updatedSan.NumOunces = (int)model.NumOunces;
+            updatedSan.Name = model.Name;
+            updatedSan.PhotoLink = model.PhotoLink;
+            return updatedSan;
         }
     }
 }

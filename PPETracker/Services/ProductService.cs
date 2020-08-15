@@ -173,6 +173,121 @@ namespace PPETracker.Services
             }
         }
 
+        /// <summary>
+        /// Create a new product record
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns>The id of the new product</returns>
+        public int UpdateProduct(UpdateProductCommand model)
+        {
+            //get the model data
+            //based on the category of the product, use the Factory Strategy object to create and return an object
+            //of the appropriate type
+            //add the object to the appropriate table
+            try
+            {
+                //update Canister
+                if (model.CategoryID == 1)
+                {
+                    Canister canisterToEdit = _context.Canisters.Find(model.ID);
+                    canisterToEdit = (Canister)_factStrategy.UpdateProduct(model, canisterToEdit, CategoryName.Canister);
+                    
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                //update Gas Mask
+                if (model.CategoryID == 2)
+                {
+                    GasMask gasMaskToEdit = _context.GasMasks.Find(model.ID);
+                    gasMaskToEdit = (GasMask)_factStrategy.UpdateProduct(model, gasMaskToEdit, CategoryName.GasMask);
+
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                //update Gloves
+                if (model.CategoryID == 3)
+                {
+                    Gloves glovesToEdit = _context.Gloves.Find(model.ID);
+                    glovesToEdit = (Gloves)_factStrategy.UpdateProduct(model, glovesToEdit, CategoryName.Gloves);
+
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                //update Hand Sanitizer
+                if (model.CategoryID == 4)
+                {
+                    HandSanitizer sanToEdit = _context.HandSanitizers.Find(model.ID);
+                    sanToEdit = (HandSanitizer)_factStrategy.UpdateProduct(model, sanToEdit, CategoryName.HandSanitizer);
+
+                    _context.SaveChanges();
+                    return model.ID;
+                }
+
+                //update Mask
+                if (model.CategoryID == 5)
+                {
+                    Mask maskToEdit = _context.Masks.Find(model.ID);
+                    maskToEdit = (Mask)_factStrategy.UpdateProduct(model, maskToEdit, CategoryName.Mask);
+
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                //update Wipes
+                if (model.CategoryID == 6)
+                {
+                    //create a new object of type Wipes
+                    //add this object to the database
+                    Wipes wipesToEdit = _context.Wipes.Find(model.ID);
+                    wipesToEdit = (Wipes)_factStrategy.UpdateProduct(model, wipesToEdit, CategoryName.Wipes);
+
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                //update Goggles
+                if (model.CategoryID == 7)
+                {
+                    //create a new object of type Goggles
+                    //add this object to the database
+                    Goggles gogglesToEdit = _context.Goggles.Find(model.ID);
+                    gogglesToEdit = (Goggles)_factStrategy.UpdateProduct(model, gogglesToEdit, CategoryName.Goggles);
+
+                    _context.SaveChanges();
+
+                    return gogglesToEdit.ID;
+                }
+
+                //update Face Shield
+                if (model.CategoryID == 8)
+                {
+                    //create a new object of type Face Shield
+                    //add this object to the database
+                    FaceShield shieldToEdit = _context.FaceShields.Find(model.ID);
+                    shieldToEdit = (FaceShield)_factStrategy.UpdateProduct(model, shieldToEdit, CategoryName.FaceShield);
+
+                    _context.SaveChanges();
+
+                    return model.ID;
+                }
+
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
         public UpdateProductCommand GetProductForUpdate(int productID)
         {
             //look up the product ID
@@ -196,27 +311,33 @@ namespace PPETracker.Services
             //canister
             if(categoryID == 1)
             {
-               model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Canister);
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Canister);
+                model.CanisterTypeOptions = _categoryService.GetCanisterTypeOptions();
+                model.GasMaskAssociatedWithOptions = _categoryService.GetGasMaskAssociatedWithOptions();
             }
             //gas mask
             else if(categoryID == 2)
             {
                 model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.GasMask);
+                model.GasMaskTypeOptions = _categoryService.GetGasMaskTypeOptions();
             }
             //gloves
             else if(categoryID == 3)
             {
-               model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Gloves);
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Gloves);
+                model.GloveSizeOptions = _categoryService.GetGloveSizeOptions();
             }
             //hand sanitizer
             else if (categoryID == 4)
             {
                 model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.HandSanitizer);
+                model.SanitizerTypeOptions = _categoryService.GetSanitizerTypeOptions();
             }
             //mask
             else if (categoryID == 5)
             {
                 model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Mask);
+                model.MaskTypeOptions = _categoryService.GetMaskTypeOptions();
             }
             //wipes
             else if (categoryID == 6)
@@ -227,6 +348,7 @@ namespace PPETracker.Services
             else if (categoryID == 7)
             {
                 model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Goggles);
+                model.GoggleTypeOptions = _categoryService.GetGoggleTypeOptions();
             }
             //face shield
             else if (categoryID == 8)
@@ -238,16 +360,6 @@ namespace PPETracker.Services
             {
                 throw new Exception("Category not valid");
             }
-
-            //add the dropdown information to the model
-            model.CategoryOptions = _categoryService.GetCategoryList();
-            model.MaskTypeOptions = _categoryService.GetMaskTypeOptions();
-            model.SanitizerTypeOptions = _categoryService.GetSanitizerTypeOptions();
-            model.GloveSizeOptions = _categoryService.GetGloveSizeOptions();
-            model.GoggleTypeOptions = _categoryService.GetGoggleTypeOptions();
-            model.GasMaskTypeOptions = _categoryService.GetGasMaskTypeOptions();
-            model.CanisterTypeOptions = _categoryService.GetCanisterTypeOptions();
-            model.GasMaskAssociatedWithOptions = _categoryService.GetGasMaskAssociatedWithOptions();
 
             //return the view model
             return model;
@@ -364,22 +476,31 @@ namespace PPETracker.Services
         //returns a string describing status of product
         public string IsProductIDValid(int productID)
         {
-            var item = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
-            //if null, throw exception
-            if (item == null)
+            try
             {
-                return "Not found";
+                var item = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
+                //if null, throw exception
+                if (item == null)
+                {
+                    return "Not found";
+                }
+                //check for IsActive flag
+                else if (item.IsActive == false)
+                {
+                    return "Not active";
+                }
+                else
+                {
+                    return "Active";
+                }
             }
-            //check for IsActive flag
-            else if (item.IsActive == false)
+            catch(Exception e)
             {
-                return "Not active";
-            }
-            else
-            {
-                return "Active";
+                Console.WriteLine(e.Message);
+                throw;
             }
         }
+            
 
         public string GetPhotoLink(int productID)
         {
@@ -396,6 +517,29 @@ namespace PPETracker.Services
             var photoLink = _context.Products.Where(p => p.ID == productID).Select(p => p.PhotoLink).FirstOrDefault();
             //return field from table - can be null
             return photoLink;
+        }
+
+        //get category ID of product
+        public int GetCategoryID(int productID)
+        {
+            try
+            {
+                int? catID = _context.Products.Where(p => p.ID == productID).Select(p => p.CategoryID).FirstOrDefault();
+                //if null, throw exception
+                if (catID == null)
+                {
+                    throw new Exception("No category for product");
+                }
+                else
+                {
+                    return (int)catID;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
     }
 }

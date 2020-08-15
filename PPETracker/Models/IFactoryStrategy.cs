@@ -9,6 +9,7 @@ namespace PPETracker.Models
     public interface IFactoryStrategy
     {
         Product MakeProduct(CreateProductCommand model, CategoryName categoryName);
+        Product UpdateProduct(UpdateProductCommand model, Product productToUpdate, CategoryName categoryName);
         UpdateProductCommand MakeEditViewModel(Product product, CategoryName categoryName);
 
         ProductDetailViewModel MakeDetailViewModel(Product product, CategoryName categoryName);

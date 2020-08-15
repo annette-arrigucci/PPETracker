@@ -34,6 +34,7 @@ namespace PPETracker.Models
             model.ID = wipesProd.ID;
             model.Brand = wipesProd.Brand;
             model.CategoryID = wipesProd.CategoryID;
+            model.CategoryName = "Wipes";
             model.Comments = wipesProd.Comments;
             model.PhotoLink = wipesProd.PhotoLink;
             model.WipeQuantity = wipesProd.WipeQuantity;
@@ -55,6 +56,18 @@ namespace PPETracker.Models
                 Quantity = 0
             };
             return wipesModel;
+        }
+
+        public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
+        {
+            Wipes updatedWipes = (Wipes)productToUpdate;
+            updatedWipes.Brand = model.Brand;
+            updatedWipes.Comments = model.Comments;
+            updatedWipes.DateModified = DateTime.Now;
+            updatedWipes.WipeQuantity = (int)model.WipeQuantity;
+            updatedWipes.Name = model.Name;
+            updatedWipes.PhotoLink = model.PhotoLink;
+            return updatedWipes;
         }
     }
 }
