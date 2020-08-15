@@ -48,6 +48,11 @@ namespace PPETracker.Data
                 {
                     Name = "Goggles",
                     IsActive = true
+                },
+                new Category
+                {
+                    Name = "FaceShield",
+                    IsActive = true
                 }
             };
             foreach (Category c in categories)

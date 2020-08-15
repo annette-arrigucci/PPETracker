@@ -10,7 +10,7 @@ namespace PPETracker.Services
     public class CategoryService
     {
         readonly ApplicationDbContext _context;
-        string[] categoryArray = { "Canister", "Gas Mask", "Gloves", "Hand Sanitizer", "Mask", "Wipes", "Goggles" };
+        string[] categoryArray = { "Canister", "Gas Mask", "Gloves", "Hand Sanitizer", "Mask", "Wipes", "Goggles", "Face Shield" };
 
         public CategoryService(ApplicationDbContext context)
         {

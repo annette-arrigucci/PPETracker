@@ -485,6 +485,10 @@
                 hideFieldsOtherThanSelected("goggle-fields");
                 goggleFields.style.display = "block";
             }
+            if (catID == 8) {
+                //face shield has no category-specific fields
+                hideFieldsOtherThanSelected("N/A");
+            }
         }
 
         function hideFieldsOtherThanSelected(IdNameForSelected) {

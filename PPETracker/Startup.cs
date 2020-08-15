@@ -45,6 +45,7 @@ namespace PPETracker
             services.AddScoped<IFactory, MaskFactory>();
             services.AddScoped<IFactory, WipesFactory>();
             services.AddScoped<IFactory, GogglesFactory>();
+            services.AddScoped<IFactory, FaceShieldFactory>();
             services.AddScoped<ProductService>();
             services.AddScoped<CategoryService>();
         }

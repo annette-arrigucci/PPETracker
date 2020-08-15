@@ -10,6 +10,7 @@ namespace PPETracker.Models
         HandSanitizer,
         Mask,
         Wipes,
-        Goggles
+        Goggles,
+        FaceShield
     }
 }

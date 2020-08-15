@@ -19,6 +19,7 @@ namespace PPETracker.Models
             model.Brand = gasMaskProd.Brand;
             model.CategoryID = gasMaskProd.CategoryID;
             model.CategoryName = "Gas Mask";
+            model.PhotoLink = gasMaskProd.PhotoLink;
             model.Comments = gasMaskProd.Comments;
             model.GasMaskType = gasMaskProd.GasMaskType;
             model.Quantity = gasMaskProd.Quantity;

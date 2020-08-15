@@ -152,6 +152,18 @@ namespace PPETracker.Services
                     return gogglesToAdd.ID;
                 }
 
+                //create new Face Shield
+                if (model.CategoryID == 8)
+                {
+                    //create a new object of type Face Shield
+                    //add this object to the database
+                    FaceShield shieldToAdd = (FaceShield)_factStrategy.MakeProduct(model, CategoryName.FaceShield);
+                    _context.FaceShields.Add(shieldToAdd);
+                    _context.SaveChanges();
+
+                    return shieldToAdd.ID;
+                }
+
                 return 0;
             }
             catch(Exception e)
@@ -215,6 +227,11 @@ namespace PPETracker.Services
             else if (categoryID == 7)
             {
                 model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.Goggles);
+            }
+            //face shield
+            else if (categoryID == 8)
+            {
+                model = _factStrategy.MakeEditViewModel(itemToEdit, CategoryName.FaceShield);
             }
             //throw exception if Category not valid
             else
@@ -301,6 +318,13 @@ namespace PPETracker.Services
             else if (categoryID == 7)
             {
                 ProductDetailViewModel prodDetailItem = _factStrategy.MakeDetailViewModel(selectedProd, CategoryName.Goggles);
+                return prodDetailItem;
+            }
+
+            //face shield
+            else if (categoryID == 8)
+            {
+                ProductDetailViewModel prodDetailItem = _factStrategy.MakeDetailViewModel(selectedProd, CategoryName.FaceShield);
                 return prodDetailItem;
             }
             else

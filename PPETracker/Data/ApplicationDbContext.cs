@@ -22,6 +22,7 @@ namespace PPETracker.Data
         public DbSet<HandSanitizer> HandSanitizers { get; set; }
         public DbSet<Mask> Masks { get; set; }
         public DbSet<Wipes> Wipes { get; set; }
+        public DbSet<FaceShield> FaceShields { get; set; }
         public DbSet<Recipient> Recipients { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<ShipmentProduct> ShipmentProducts { get; set; }
