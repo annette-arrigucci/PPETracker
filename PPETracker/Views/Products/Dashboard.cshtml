@@ -11,7 +11,7 @@
     }
 </style>
 <h1 class="text-center">Dashboard</h1>
-    
+
 <div class="container">
     <div class="row">
         <div class="col-sm-2">
@@ -27,7 +27,7 @@
             </select><br />
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-sm-12">
             <table class="table" id="ppe-table">
@@ -73,7 +73,7 @@
                                 <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
                             </td>
                             <td>
-                                @Html.ActionLink("Details", "Details", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
+                                <button class="btn btn-sm btn-info" style="margin-left: 10px;" onclick="ViewProductDetails('@item.ID')">Details</button>
                                 @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
                                 @Html.ActionLink("Delete", "Delete", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
                             </td>
@@ -87,6 +87,9 @@
 
 <!-- Product quantity modal goes here -->
 <div id="updateProdQuantity"></div>
+
+<!-- Product details modal goes here -->
+<div id="prodDetails"></div>
 
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -125,6 +128,17 @@
                     $.validator.unobtrusive.parse("#updateQuantityModal");
                     //display modal
                     $('#updateQuantityModal').modal('show');
+                }
+            );
+        }
+
+        function ViewProductDetails(idNum) {
+            //call controller action to get product details and return partial view
+            var url = '@Url.Action("Details", "Products")?productID=' + idNum;
+            $('#prodDetails').load(url,
+                function () {
+                    //display modal
+                    $('#prodDetailsModal').modal('show');
                 }
             );
         }

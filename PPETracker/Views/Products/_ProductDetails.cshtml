@@ -1,0 +1,163 @@
+﻿@model PPETracker.ViewModels.ProductDetailViewModel
+
+<div class="modal fade" id="prodDetailsModal" tabindex="-1" role="dialog" aria-labelledby="prodDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="prodDetailsModalLabel">Product Details</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 style="text-align: center; margin-bottom: 20px !important;">@Model.Name</h3>
+                <div class="row">
+                    <!--<div class="col-sm-6 offset-sm-4">-->
+                    <!--</div>-->
+                </div>
+
+
+                <div class="row">
+                    @if (Model.PhotoLink != null)
+                    {
+                        <div class="col-sm-6">
+                            <img src="@Model.PhotoLink" style="width: 100%; max-height: 100%;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-4"></div>
+                    }
+                    <div class="col-sm-6">
+                        @Html.HiddenFor(model => model.ID)
+                        <dl>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.CategoryName)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.CategoryName)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Brand)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Brand)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Comments)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Comments)
+                            </dd>
+                            @if (Model.CategoryName == "Canister")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.CanisterType)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.CanisterType)
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GasMaskAssociatedWith)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GasMaskAssociatedWith)
+                                </dd>
+                            }
+                            @if (Model.CategoryName == "Gas Mask")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GasMaskType)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GasMaskType)
+                                </dd>
+                            }
+
+                            @if (Model.CategoryName == "Gloves")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GloveQuantity)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GloveQuantity)
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GloveSize)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GloveSize)
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GloveThickness)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GloveThickness)
+                                </dd>
+                            }
+                            @if (Model.CategoryName == "Goggles")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.GogglesType)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.GogglesType)
+                                </dd>
+                            }
+                            @if (Model.CategoryName == "Hand Sanitizer")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.NumOunces)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.NumOunces)
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.SanitizerType)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.SanitizerType)
+                                </dd>
+                            }
+
+                            @if (Model.CategoryName == "Mask")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.MaskType)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.MaskType)
+                                </dd>
+                            }
+
+                            @if (Model.CategoryName == "Wipes")
+                            {
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.WipeQuantity)
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.WipeQuantity)
+                                </dd>
+                            }
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Quantity)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Quantity)
+                            </dd>
+                        </dl>
+                        <div style="margin-top: 20px;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>

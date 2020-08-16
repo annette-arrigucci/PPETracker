@@ -22,6 +22,7 @@ namespace PPETracker.Models
             model.Comments = canisterProd.Comments;
             model.CanisterType = canisterProd.CanisterType;
             model.GasMaskAssociatedWith = canisterProd.GasMaskAssociatedWith;
+            model.PhotoLink = canisterProd.PhotoLink;
             model.Quantity = canisterProd.Quantity;
             return model;
         }

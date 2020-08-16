@@ -66,6 +66,12 @@ namespace PPETracker.Models
 
         public Product UpdateProduct(UpdateProductCommand model, Product productToUpdate)
         {
+            //if the user entered a new mask type, make that the Mask Type entry
+            if (model.MaskType == "Other")
+            {
+                model.MaskType = model.UserEnteredMaskType;
+            }
+
             Mask updatedMask = (Mask)productToUpdate;
             updatedMask.Brand = model.Brand;
             updatedMask.Comments = model.Comments;

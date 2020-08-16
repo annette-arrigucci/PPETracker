@@ -34,6 +34,18 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult Details(int? productID)
+        {
+            if (productID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //get info for product with Product ID
+            var model = _service.GetProductDetail((int)productID);
+            return PartialView("_ProductDetails", model);
+        }
+
 
         [HttpGet]
         public IActionResult AddNew()
@@ -198,7 +210,7 @@ namespace PPETracker.Controllers
                 }
                 //send the model to Product Service to save to database
                 _service.CreateProduct(model);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Dashboard", "Products");
             }
             //get dropdown options for categories and category-specific types
             model.CategoryOptions = _catService.GetCategoryList();

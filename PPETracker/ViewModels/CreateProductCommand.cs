@@ -31,7 +31,7 @@ namespace PPETracker.ViewModels
         public IFormFile File { get; set; }
 
         [Required]
-        [StringLength(30, MinimumLength = 3)]
+        [StringLength(30, MinimumLength = 2)]
         public string Brand { get; set; }
 
         [DisplayName("Comments (optional)")]
