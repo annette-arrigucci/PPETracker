@@ -32,7 +32,7 @@
                 <input id="PhotoLink" name="PhotoLink" type="hidden" value="@Model.PhotoLink" />
                 <div id="currentPhoto" class="form-group">
                     <img src="@Url.Content(Model.PhotoLink)" id="currentImg" style="width: 100%; max-width: 300px;" />
-                    <button type="button" class="btn btn-default" id="removePhoto">Remove</button>
+                    <button type="button" class="btn btn-danger" id="removePhoto">Remove</button>
                 </div>
                 <!--show if remove button is clicked-->
                 <div id="selectNewPhoto" class="form-group" style="display: none">
@@ -55,13 +55,6 @@
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
 
-            <!---<div class="form-group">
-        <label asp-for="CategoryID" class="bold-label"></label><br />
-        <select asp-for="CategoryID" asp-items="Model.CategoryOptions">
-            <option value="" disabled selected>--Select category--</option>
-        </select><br />
-        <span asp-validation-for="CategoryID" class="text-danger"></span>
-    </div>-->
             <div class="form-group">
                 <label asp-for="CategoryName" class="bold-label"></label><br />
                 @Model.CategoryName
@@ -258,13 +251,10 @@
 
             <div class="form-group">
                 <input type="submit" value="Save Changes" class="btn btn-primary" />
+                <a asp-action="Dashboard" asp-controller="Products" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Dashboard" asp-controller="Products">Back to List</a>
 </div>
 
 @section Scripts {

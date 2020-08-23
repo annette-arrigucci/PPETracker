@@ -47,6 +47,29 @@ namespace PPETracker.Services
             return resultList;
         }
 
+        //Method to return list of deactivated products for dashboard
+        public List<ProductSummaryViewModel> GetDeactivatedProducts()
+        {
+            var results = _context.Products.Where(p => p.IsActive == false)
+                .Select(p => new ProductSummaryViewModel
+                {
+                    ID = p.ID,
+                    CategoryID = p.CategoryID,
+                    Name = p.Name,
+                    Brand = p.Brand,
+                    PhotoLink = p.PhotoLink,
+                    Quantity = p.Quantity
+                });
+            var resultList = results.ToList();
+            foreach (var r in resultList)
+            {
+                //look up category name
+                var categoryName = _categoryService.GetCategoryName(r.CategoryID);
+                r.CategoryName = categoryName;
+            }
+            return resultList;
+        }
+
         //Method to create a view model for creating a new product
         public CreateProductCommand CreateProductInitialize()
         {
@@ -374,11 +397,8 @@ namespace PPETracker.Services
             {
                 throw new Exception("Product not found");
             }
-            //check for IsActive flag
-            if (selectedProd.IsActive == false)
-            {
-                throw new Exception("Product not active");
-            }
+            //do not check for IsActive flag - can request details on a deactivated product
+           
             //get the category
             int categoryID = selectedProd.CategoryID;
 
@@ -467,6 +487,64 @@ namespace PPETracker.Services
                 _context.SaveChanges();
             }
             catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        //deactivate product
+        public void DeactivateProduct(int productID)
+        {
+            try
+            {
+                //look up the product ID
+                var itemToUpdate = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
+                //if null, throw exception
+                if (itemToUpdate == null)
+                {
+                    throw new Exception("Product not found");
+                }
+                //check for IsActive flag
+                if (itemToUpdate.IsActive == false)
+                {
+                    throw new Exception("Product not active");
+                }
+
+                //set the Is Active flag to false
+                itemToUpdate.IsActive = false;
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        //reactivate product
+        public void ReactivateProduct(int productID)
+        {
+            try
+            {
+                //look up the product ID
+                var itemToUpdate = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
+                //if null, throw exception
+                if (itemToUpdate == null)
+                {
+                    throw new Exception("Product not found");
+                }
+                //check for IsActive flag
+                if (itemToUpdate.IsActive == true)
+                {
+                    throw new Exception("Error - product already active");
+                }
+
+                //set the Is Active flag to true
+                itemToUpdate.IsActive = true;
+                _context.SaveChanges();
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 throw;

@@ -18,12 +18,12 @@ namespace PPETracker.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Privacy()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
             return View();
         }

@@ -35,11 +35,28 @@ namespace PPETracker.Controllers
         }
 
         [HttpGet]
+        public IActionResult DeactivatedProducts()
+        {
+            var model = _service.GetDeactivatedProducts();
+            ViewBag.CategoryOptions = _catService.GetCategoryNamesList();
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult Details(int? productID)
         {
             if (productID == null)
             {
                 throw new Exception("Invalid Product ID");
+            }
+            string isProdValid = _service.IsProductIDValid((int)productID);
+            if(isProdValid == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if(isProdValid == "Not active")
+            {
+                throw new Exception("Product not active");
             }
             //get info for product with Product ID
             var model = _service.GetProductDetail((int)productID);
@@ -464,6 +481,15 @@ namespace PPETracker.Controllers
             {
                 throw new Exception("Invalid Product ID");
             }
+            string isProdValid = _service.IsProductIDValid((int)productID);
+            if (isProdValid == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (isProdValid == "Not active")
+            {
+                throw new Exception("Product not active");
+            }
             //get info for product with Product ID
             var model = _service.GetProductDetail((int)productID);
             return PartialView("_UpdateProductQuantity", model);
@@ -483,6 +509,94 @@ namespace PPETracker.Controllers
                 _service.UpdateProductQuantity(model.ID, model.Quantity);
                 return RedirectToAction("Dashboard");
             }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? productID)
+        {
+            if (productID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //check if product ID is valid
+            string prodStatus = _service.IsProductIDValid((int)productID);
+            if (prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Not active")
+            {
+                throw new Exception("Product not active");
+            }
+            //get info for product with Product ID
+            var model = _service.GetProductDetail((int)productID);
+            return PartialView("_ProductDelete", model);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmDelete(int? ID)
+        {
+            if (ID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //check if product ID is valid
+            string prodStatus = _service.IsProductIDValid((int)ID);
+            if (prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Not active")
+            {
+                throw new Exception("Product not active");
+            }
+            //deactivate the product
+            _service.DeactivateProduct((int)ID);
+            return RedirectToAction("Dashboard");
+        }
+
+        [HttpGet]
+        public IActionResult Reactivate(int? productID)
+        {
+            if (productID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //check if product ID is valid
+            string prodStatus = _service.IsProductIDValid((int)productID);
+            if (prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Active")
+            {
+                throw new Exception("Product already active");
+            }
+            //get info for product with Product ID
+            var model = _service.GetProductDetail((int)productID);
+            return PartialView("_ProductReactivate", model);
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmReactivate(int? ID)
+        {
+            if (ID == null)
+            {
+                throw new Exception("Invalid Product ID");
+            }
+            //check if product ID is valid
+            string prodStatus = _service.IsProductIDValid((int)ID);
+            if (prodStatus == "Not found")
+            {
+                throw new Exception("Product not found");
+            }
+            if (prodStatus == "Active")
+            {
+                throw new Exception("Product already active");
+            }
+            //get info for product with Product ID
+            _service.ReactivateProduct((int)ID);
+            return RedirectToAction("Dashboard");
         }
 
         private void RemovePhoto(string fileName)
