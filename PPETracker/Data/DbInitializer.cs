@@ -1,5 +1,7 @@
-﻿using PPETracker.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using PPETracker.Models;
 using System.Linq;
+using System.Security.Claims;
 
 namespace PPETracker.Data
 {
@@ -60,6 +62,30 @@ namespace PPETracker.Data
                 context.Categories.Add(c);
             }
             context.SaveChanges();
+        }
+
+        public static void CreateUsers(UserManager<ApplicationUser> userManager)
+        {
+            //create two admin users
+            if (userManager.FindByEmailAsync("john.tom.abc@gmail.com").Result == null)
+            {
+                var user1 = new ApplicationUser();
+                user1.Email = "john.tom.abc@gmail.com";
+                user1.UserName = "john.tom.abc@gmail.com";
+                var password = "Abc123$";
+                user1.IsAdmin = true;
+                IdentityResult result = userManager.CreateAsync(user1, password).Result;
+            }
+
+            if (userManager.FindByEmailAsync("annette.arrigucci@gmail.com").Result == null)
+            {
+                var user2 = new ApplicationUser();
+                user2.Email = "annette.arrigucci@gmail.com";
+                user2.UserName = "annette.arrigucci@gmail.com";
+                var password = "Abc123$";
+                user2.IsAdmin = true;
+                IdentityResult result = userManager.CreateAsync(user2, password).Result;
+            }
         }
     }
 }
