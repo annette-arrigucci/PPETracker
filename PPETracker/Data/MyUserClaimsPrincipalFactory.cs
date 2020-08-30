@@ -21,10 +21,19 @@ namespace PPETracker.Data
         {
             var principal = await base.CreateAsync(user);
             var identity = (ClaimsIdentity)principal.Identity;
-
-            var claim = new Claim("IsAdmin", user.IsAdmin.ToString());
-
-            identity.AddClaim(claim);
+            
+            //if IsAdmin is true, add new claim
+            if(user.IsAdmin == true)
+            {
+                var claim = new Claim("IsAdmin", "Y");
+                identity.AddClaim(claim);
+            }
+            else
+            {
+                var claim = new Claim("IsAdmin", "N");
+                identity.AddClaim(claim);
+            }
+            
             return principal;
         }
     }

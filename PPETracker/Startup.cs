@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using PPETracker.Services;
 using PPETracker.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PPETracker
 {
@@ -33,9 +34,19 @@ namespace PPETracker
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
+
+            services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+            services.AddAuthorization(OptionsBuilderConfigurationExtensions =>
+            {
+                OptionsBuilderConfigurationExtensions.AddPolicy("IsAdmin", policyIsAdminRequirement =>
+                {
+                    policyIsAdminRequirement.Requirements.Add(new IsAdminRequirement());
+                });
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddScoped<IFactoryStrategy, FactoryStrategy>();

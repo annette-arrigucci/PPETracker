@@ -13,17 +13,20 @@
 <h1 class="text-center">Dashboard</h1>
 
 <div class="container">
-    <div class="row">
-        <div class="col-sm-2">
-            <a asp-action="AddNew" class="btn btn-sm btn-success" style="margin-bottom: 20px !important;">Add New</a>
+    @if (ViewBag.IsUserAdmin == true)
+    {
+        <div class="row">
+            <div class="col-sm-2">
+                <a asp-action="AddNew" class="btn btn-sm btn-success" style="margin-bottom: 20px !important;">Add New</a>
+            </div>
         </div>
-    </div>
+    }
 
     <div class="row">
         <div class="col-sm-6">
             <label class="control-label">Filter by Category: </label>
             <select id="categoryDropdown" asp-items="ViewBag.CategoryOptions" style="margin-bottom: 20px;">
-                <option value="" selected>--All--</option>
+                <option value="--All--" selected>--All--</option>
             </select><br />
         </div>
     </div>
@@ -70,12 +73,18 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Quantity)
-                                <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
+                                @if (ViewBag.IsUserAdmin == true)
+                                {
+                                    <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
+                                }
                             </td>
                             <td>
                                 <button class="btn btn-sm btn-info" style="margin-left: 10px;" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
-                                <button class="btn btn-sm btn-danger" onclick="DeleteProduct('@item.ID')">Delete</button>
+                                @if (ViewBag.IsUserAdmin == true)
+                                {
+                                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
+                                    <button class="btn btn-sm btn-danger" onclick="DeleteProduct('@item.ID')">Delete</button>
+                                }
                             </td>
                         </tr>
                     }
@@ -83,11 +92,14 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <a asp-action="DeactivatedProducts" class="btn btn-sm btn-secondary" style="margin: 20px 0px;">Deactivated Products</a>
+    @if (ViewBag.IsUserAdmin == true)
+    {
+        <div class="row">
+            <div class="col-sm-4">
+                <a asp-action="DeactivatedProducts" class="btn btn-sm btn-secondary" style="margin: 20px 0px;">Deactivated Products</a>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 <!-- Product quantity modal goes here -->
@@ -121,10 +133,18 @@
 
             $('#categoryDropdown').on("change", function () {
                 var selectedCat = $('#categoryDropdown').val();
-                ppeTable
+                if (selectedCat == "--All--") {
+                    ppeTable
                     .column(2)
-                    .search('^(' + selectedCat + ')$', true, false)
+                    .search('', true, false)
                     .draw();
+                }
+                else {
+                    ppeTable
+                        .column(2)
+                        .search('^(' + selectedCat + ')$', true, false)
+                        .draw();
+                }
             });
         });
 

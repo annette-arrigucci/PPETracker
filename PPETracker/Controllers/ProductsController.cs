@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using PPETracker.Models;
@@ -18,12 +20,14 @@ namespace PPETracker.Controllers
         public ProductService _service;
         public CategoryService _catService;
         private readonly IWebHostEnvironment _environment;
+        public UserManager<ApplicationUser> _userManager;
 
-        public ProductsController(ProductService service, CategoryService catService, IWebHostEnvironment environment)
+        public ProductsController(ProductService service, CategoryService catService, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager)
         {
             _service = service;
             _catService = catService;
             _environment = environment;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -31,9 +35,20 @@ namespace PPETracker.Controllers
         {
             var model = _service.GetProducts();
             ViewBag.CategoryOptions = _catService.GetCategoryNamesList();
+            ViewBag.IsUserAdmin = false;
+
+            if(User.Identity.IsAuthenticated == true)
+            {
+                string isAdminValue = User.Claims.FirstOrDefault(x => x.Type == "IsAdmin").Value;
+                if (isAdminValue == "Y")
+                {
+                    ViewBag.IsUserAdmin = true;
+                }
+            }
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpGet]
         public IActionResult DeactivatedProducts()
         {
@@ -63,7 +78,7 @@ namespace PPETracker.Controllers
             return PartialView("_ProductDetails", model);
         }
 
-
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpGet]
         public IActionResult AddNew()
         {
@@ -71,6 +86,7 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddNew(CreateProductCommand model)
@@ -242,6 +258,7 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         public IActionResult Edit(int? ID)
         {
             if(ID == null)
@@ -253,6 +270,7 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(UpdateProductCommand model)
@@ -474,6 +492,7 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpGet]
         public IActionResult UpdateProductQuantity(int? productID)
         {
@@ -495,7 +514,9 @@ namespace PPETracker.Controllers
             return PartialView("_UpdateProductQuantity", model);
         }
 
+
         //Method to handle POST request to update product quantity
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateProductQuantity([Bind(nameof(ProductDetailViewModel.ID), nameof(ProductDetailViewModel.Quantity))] ProductDetailViewModel model)
@@ -512,6 +533,7 @@ namespace PPETracker.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         public IActionResult Delete(int? productID)
         {
             if (productID == null)
@@ -534,6 +556,7 @@ namespace PPETracker.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         public IActionResult ConfirmDelete(int? ID)
         {
             if (ID == null)
@@ -556,6 +579,7 @@ namespace PPETracker.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         public IActionResult Reactivate(int? productID)
         {
             if (productID == null)
@@ -578,6 +602,7 @@ namespace PPETracker.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
         public IActionResult ConfirmReactivate(int? ID)
         {
             if (ID == null)
