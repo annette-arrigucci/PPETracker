@@ -74,3 +74,40 @@ body {
 .bold-label {
     font-weight: 700;
 }
+
+/*for mobile, decrease image size for modal popup */
+.img-responsive {
+    width: 80%;
+    margin-bottom: 20px !important;
+}
+
+/*for mobile, bump up font size */
+body {
+    font-size: 1.2rem !important;
+}
+
+/*for mobile, bump up font size on form */
+.mobile-form-text {
+    font-size: 1.2rem !important;
+}
+
+/*for mobile, add margins for buttons to display in vertical line */
+.btn-responsive {
+    margin: 0 5px 5px 5px !important;
+}
+
+/* settings for tablet and larger displays */
+@media (min-width: 576px) {
+    .img-responsive {
+        width: 100%;
+        max-height: 100%;
+    }
+
+    body {
+        font-size: 100% !important;
+    }
+
+    .btn-responsive {
+        margin: 0 5px 5px 5px !important;
+    }
+}

@@ -178,7 +178,7 @@ namespace PPETracker.Services
             
             List<string> maskTypeReferenceList = new List<string>
             {
-                "N-95", "KN-95", "KF-94", "Surgical", "Cloth"
+                "N-95", "KN-95", "KN-94", "Surgical", "Cloth"
             };
 
             //get mask types from the Products table to see if users entered a new type to be included on the list

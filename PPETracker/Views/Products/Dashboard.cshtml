@@ -5,6 +5,8 @@
 }
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
 <style>
     .pull-left {
         float: left !important;
@@ -17,7 +19,7 @@
     {
         <div class="row">
             <div class="col-sm-2">
-                <a asp-action="AddNew" class="btn btn-sm btn-success" style="margin-bottom: 20px !important;">Add New</a>
+                <a asp-action="AddNew" class="btn btn-success" style="margin-bottom: 20px !important;">Add New</a>
             </div>
         </div>
     }
@@ -33,7 +35,7 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <table class="table" id="ppe-table">
+            <table class="table" id="ppe-table" width="100%">
                 <thead>
                     <tr>
                         <th>
@@ -75,15 +77,15 @@
                                 @Html.DisplayFor(modelItem => item.Quantity)
                                 @if (ViewBag.IsUserAdmin == true)
                                 {
-                                    <button class="btn btn-sm btn-primary" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
+                                    <button class="btn btn-primary btn-responsive" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
                                 }
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info" style="margin-left: 10px;" onclick="ViewProductDetails('@item.ID')">Details</button>
+                                <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
                                 @if (ViewBag.IsUserAdmin == true)
                                 {
-                                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
-                                    <button class="btn btn-sm btn-danger" onclick="DeleteProduct('@item.ID')">Delete</button>
+                                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-primary btn-responsive" })
+                                    <button class="btn btn-danger btn-responsive" onclick="DeleteProduct('@item.ID')">Delete</button>
                                 }
                             </td>
                         </tr>
@@ -115,13 +117,24 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
             var ppeTable = $('#ppe-table').DataTable({
                 "order": [[1, "asc"]],
                 "dom": '<"pull-left"f>ti',
-                "paging": false
+                "paging": false,
+                //settings for responsive view - no details button and column priority
+                responsive: { details: false },
+                columns: [
+                    { responsivePriority: 5 },
+                    { responsivePriority: 1 },
+                    { responsivePriority: 4 },
+                    { responsivePriority: 6 },
+                    { responsivePriority: 2 },
+                    { responsivePriority: 2 }
+                ]
             });
 
             $(document).keypress(
