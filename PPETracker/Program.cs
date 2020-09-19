@@ -27,6 +27,7 @@ namespace PPETracker
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     DbInitializer.Initialize(context);
+                    DbInitializer.CreateRecipients(context);
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     DbInitializer.CreateUsers(userManager);

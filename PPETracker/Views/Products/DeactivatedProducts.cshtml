@@ -5,6 +5,8 @@
 }
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
 <style>
     .pull-left {
         float: left !important;
@@ -88,13 +90,24 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
             var ppeTable = $('#ppe-table-deactivated').DataTable({
                 "order": [[1, "asc"]],
                 "dom": '<"pull-left"f>ti',
-                "paging": false
+                "paging": false,
+                //settings for responsive view - no details button and column priority
+                responsive: { details: false },
+                columns: [
+                    { responsivePriority: 3 },
+                    { responsivePriority: 1 },
+                    { responsivePriority: 4 },
+                    { responsivePriority: 6 },
+                    { responsivePriority: 2 },
+                    { responsivePriority: 2 }
+                ]
             });
 
             $(document).keypress(
@@ -106,10 +119,18 @@
 
             $('#categoryDropdown').on("change", function () {
                 var selectedCat = $('#categoryDropdown').val();
-                ppeTable
-                    .column(2)
-                    .search(selectedCat)
-                    .draw();
+                if (selectedCat == "--All--") {
+                    ppeTable
+                        .column(2)
+                        .search('', true, false)
+                        .draw();
+                }
+                else {
+                    ppeTable
+                        .column(2)
+                        .search('^(' + selectedCat + ')$', true, false)
+                        .draw();
+                }
             });
         });
 

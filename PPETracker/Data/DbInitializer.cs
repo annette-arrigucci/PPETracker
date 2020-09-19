@@ -87,5 +87,82 @@ namespace PPETracker.Data
                 IdentityResult result = userManager.CreateAsync(user2, password).Result;
             }
         }
+
+        public static void CreateRecipients(ApplicationDbContext context)
+        {
+            if (context.Recipients.Any())
+            {
+                return;
+            }
+            var recipients = new Recipient[]
+            {
+                new Recipient
+                {
+                    Name = "SL",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "MA",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "JA",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "NS",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "AT",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "MF",
+                    IsActive = true
+                }
+                ,
+                new Recipient
+                {
+                    Name = "JM",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "WS",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "VK",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "CJ",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "NC",
+                    IsActive = true
+                },
+                new Recipient
+                {
+                    Name = "AP",
+                    IsActive = true
+                }
+            };
+            foreach (Recipient r in recipients)
+            {
+                context.Recipients.Add(r);
+            }
+            context.SaveChanges();
+        }
     }
 }

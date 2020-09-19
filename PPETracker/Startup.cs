@@ -60,6 +60,7 @@ namespace PPETracker
             services.AddScoped<IFactory, FaceShieldFactory>();
             services.AddScoped<ProductService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<ShipmentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
