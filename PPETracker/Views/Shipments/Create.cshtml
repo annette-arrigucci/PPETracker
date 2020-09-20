@@ -1,0 +1,136 @@
+﻿@model PPETracker.ViewModels.CreateShipmentCommand
+
+@{
+    ViewData["Title"] = "Create Shipment";
+}
+
+<h1>Create Shipment</h1>
+
+<h4>CreateShipmentCommand</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ScheduledShipDate" class="control-label"></label>
+                <input asp-for="ScheduledShipDate" class="form-control" />
+                <span asp-validation-for="ScheduledShipDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecipientID" class="control-label"></label>
+                <select asp-for="RecipientID" asp-items="Model.RecipientSelectionList">
+                    <option value="" disabled selected>--Select recipient--</option>
+                </select><br />
+                <span asp-validation-for="RecipientID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <input asp-for="Comments" class="form-control" />
+                <span asp-validation-for="Comments" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="bold-label">Available Products</label><br />
+                <select asp-items="Model.CategoryList">
+                    <option value="" disabled selected>--Select category--</option>
+                </select><br />
+            </div>
+
+            <!--TODO: div to hide/show table when category selected-->
+            <div class="row" id="available-ppe-item-table">
+                <div class="col-sm-12">
+                    <table class="table" id="ppe-table" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Photo
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Brand
+                                </th>
+                                <th>
+                                    Quantity Available
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AvailableProductList)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@item.PhotoLink" width="100" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CategoryName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Brand)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Quantity)
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+                                        <button class="btn btn-info btn-responsive" onclick="AddProductToShipment('@item.ID')">Add</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--TODO: Table shows products selected-->
+            <div class="row" id="selected-ppe-item-table">
+                <label class="bold-label">Selected Products</label><br />
+                <div class="col-sm-12">
+                    <table class="table" id="selected-ppe-table" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Photo
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Brand
+                                </th>
+                                <th>
+                                    Quantity to Ship
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--hidden form input-->
+            @for (int i = 0; i < Model.ProductSelection.Count; i++)
+            {
+                <input type="text" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" />
+                <input type="text" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

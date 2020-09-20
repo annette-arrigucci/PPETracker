@@ -33,10 +33,41 @@ namespace PPETracker.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             CreateShipmentCommand model = _shipService.GetCreateModelWithProducts();
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Create(CreateShipmentCommand model)
+        {
+            //model Validations go here
+            //check shipping date
+            if(model.ScheduledShipDate < DateTime.Today)
+            {
+                ModelState.AddModelError("ScheduledShipDate", "Date cannot be before today's date");
+            }
+            //check that each shipment product selection is valid
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            else
+            {
+                //Create the shipment
+                //get the username
+                model.UserName = User.Identity.Name;
+                //Get the shipment ID 
+                int shipmentID = _shipService.CreateShipment(model);
+                //do validations then add the shipment content records
+                //_shipService.CreateShipmentProductRecords(shipmentID, model.ProductSelection);
+
+                //Redirect to Shipments Dashboard
+                return RedirectToAction("Dashboard", "Products");
+            }
         }
     }
 }
