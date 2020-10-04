@@ -493,6 +493,34 @@ namespace PPETracker.Services
             }
         }
 
+        //Get product quantity
+        public int GetProductQuantity(int productID)
+        {
+            try
+            {
+                //look up the product ID
+                var result = _context.Products.Where(p => p.ID == productID).Select(p => p).FirstOrDefault();
+                //if null, throw exception
+                if (result == null)
+                {
+                    throw new Exception("Product not found");
+                }
+                //check for IsActive flag
+                if (result.IsActive == false)
+                {
+                    throw new Exception("Product not active");
+                }
+
+                //update the quantity
+                return result.Quantity;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
         //deactivate product
         public void DeactivateProduct(int productID)
         {

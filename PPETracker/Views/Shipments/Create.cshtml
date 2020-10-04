@@ -4,6 +4,9 @@
     ViewData["Title"] = "Create Shipment";
 }
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
 <h1>Create Shipment</h1>
 
 <h4>CreateShipmentCommand</h4>
@@ -32,7 +35,7 @@
 
             <div class="form-group">
                 <label class="bold-label">Available Products</label><br />
-                <select asp-items="Model.CategoryList">
+                <select asp-items="Model.CategoryList" id="categoryDropdown" style="margin-bottom: 20px;">
                     <option value="" disabled selected>--Select category--</option>
                 </select><br />
             </div>
@@ -45,6 +48,10 @@
                             <tr>
                                 <th>
                                     Photo
+                                </th>
+                                <th>
+                                    Name
+                                </th>
                                 <th>
                                     Category
                                 </th>
@@ -54,7 +61,7 @@
                                 <th>
                                     Quantity Available
                                 </th>
-                                <th></th>
+                                <th>NA</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,7 +69,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <img src="@item.PhotoLink" width="100" />
+                                        @*<img src="@item.PhotoLink" width="100" />*@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Name)
@@ -78,7 +85,7 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                        <button class="btn btn-info btn-responsive" onclick="AddProductToShipment('@item.ID')">Add</button>
+                                        <button class="btn btn-info btn-responsive" id="addButton">Add</button>
                                     </td>
                                 </tr>
                             }
@@ -95,6 +102,10 @@
                             <tr>
                                 <th>
                                     Photo
+                                </th>
+                                <th>
+                                    Name
+                                </th>
                                 <th>
                                     Category
                                 </th>
@@ -104,10 +115,31 @@
                                 <th>
                                     Quantity to Ship
                                 </th>
-                                <th></th>
+                                <th>NA</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td>
+                                    @*<img src="@item.PhotoLink" width="100" />*@
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                    @*<button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+        <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -133,4 +165,69 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+
+    <script type="text/javascript" charset="utf8">
+        $(document).ready(function () {
+            var ppeTable = $('#ppe-table').DataTable(/*{
+                "order": [[1, "asc"]],
+                "dom": '<"pull-left"f>ti',
+                "paging": false,
+
+                //settings for responsive view - no details button and column priority
+                /*responsive: { details: false },
+                columns: [
+                    { responsivePriority: 3 },
+                    { responsivePriority: 1 },
+                    { responsivePriority: 4 },
+                    { responsivePriority: 6 },
+                    { responsivePriority: 2 },
+                    { responsivePriority: 2 }
+                ]
+            }*/);
+
+            var selectedPPETable = $('#selected-ppe-table').DataTable();
+
+            /*$('#categoryDropdown').on("change", function () {
+                var selectedCat = $('#categoryDropdown').val();
+                if (selectedCat == "--All--") {
+                    ppeTable
+                        .column(2)
+                        .search('', true, false)
+                        .draw();
+                }
+                else {
+                    ppeTable
+                        .column(2)
+                        .search('^(' + selectedCat + ')$', true, false)
+                        .draw();
+                }
+            });*/
+
+            //TODO: when a user selects to add a product to the list,
+            // - remove it from available table
+            // - add it to visible selected table with a quantity of 1
+            // - add it to the hidden selected table with a quantity of 1
+
+           $('#ppe-table tbody').on('click', '#addButton', function (event) {
+                event.preventDefault();
+                var row = ppeTable.row($(this).parents('tr'));
+                var rowNode = row.node();
+                row.remove();
+
+                selectedPPETable
+                    .row.add(rowNode)
+                    .draw();
+            });
+
+            $(document).keypress(
+                function (event) {
+                    if (event.which == '13') {
+                        event.preventDefault();
+                    }
+                });
+        });
+    </script>
 }

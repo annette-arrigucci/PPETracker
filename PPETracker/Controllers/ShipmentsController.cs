@@ -49,7 +49,13 @@ namespace PPETracker.Controllers
             {
                 ModelState.AddModelError("ScheduledShipDate", "Date cannot be before today's date");
             }
+
             //check that each shipment product selection is valid
+            List<string> errorMessages = _shipService.CheckSelectedProducts(model.ProductSelection);
+            foreach (var message in errorMessages)
+            {
+                ModelState.AddModelError("", message);
+            }
 
             if (!ModelState.IsValid)
             {
@@ -60,10 +66,11 @@ namespace PPETracker.Controllers
                 //Create the shipment
                 //get the username
                 model.UserName = User.Identity.Name;
+
                 //Get the shipment ID 
                 int shipmentID = _shipService.CreateShipment(model);
-                //do validations then add the shipment content records
-                //_shipService.CreateShipmentProductRecords(shipmentID, model.ProductSelection);
+
+                _shipService.CreateShipmentProductRecords(shipmentID, model.ProductSelection);
 
                 //Redirect to Shipments Dashboard
                 return RedirectToAction("Dashboard", "Products");

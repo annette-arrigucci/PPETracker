@@ -70,7 +70,7 @@ namespace PPETracker.Services
             return shipmentToAdd.ID;
         }
 
-        /*public List<string> CheckSelectedProducts(List<ProductSelectionItem> selectedProductList)
+        public List<string> CheckSelectedProducts(List<ProductSelectionItem> selectedProductList)
         {
             //validate each selection on the list
             List<string> errorMessages = new List<string>();
@@ -84,20 +84,38 @@ namespace PPETracker.Services
                 {
                     errorMessages.Add("Product ID " + item.ProductID + "cannot be added because it is " + productValidMessage + ". Please contact an administrator.");
                 }
-                if(errorMessages.Count > 0)
-                {
-                    return errorMessages;
-                }
+
                 //otherwise check quantity
-
+                //get available quantity for product
+                int quantityAvailable = _productService.GetProductQuantity(item.ProductID);
+                //if selected quantity exceeds what is available, add error message
+                if(item.QuantityForOrder > quantityAvailable)
+                {
+                    errorMessages.Add("Unable to ship " + item.QuantityForOrder + " of Product ID " + item.ProductID 
+                        + ". There are " + quantityAvailable + " units of product available.");
+                }
             }
-            //if not valid, add an error message to return to Controller
-        }*/
+            return errorMessages;
+        }
 
-        //TODO: Add Create Shipment Product method
+        //Add Create Shipment Product method
+        public void CreateShipmentProductRecords(int shipmentID, List<ProductSelectionItem> prodSelectList)
+        {
+            foreach(var item in prodSelectList)
+            {
+                ShipmentProduct shipProd = new ShipmentProduct
+                {
+                    ShipmentID = shipmentID,
+                    ProductID = item.ProductID,
+                    Quantity = item.QuantityForOrder
+                };
+                _context.ShipmentProducts.Add(shipProd);
+                _context.SaveChanges();
+            }
+        }
         //TODO: Add Edit Shipment methods
         //TODO: Add Delete Shipment methods
-        //TODO: Add View Shipment methods
+        //TODO: Add View Shipment methods 
         //TODO: Add View all shipment records method
     }
 }
