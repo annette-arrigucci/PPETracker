@@ -47,6 +47,9 @@
                         <thead>
                             <tr>
                                 <th>
+                                    ID
+                                </th>
+                                <th>
                                     Photo
                                 </th>
                                 <th>
@@ -68,6 +71,9 @@
                             @foreach (var item in Model.AvailableProductList)
                             {
                                 <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ID)
+                                    </td>
                                     <td>
                                         @*<img src="@item.PhotoLink" width="100" />*@
                                     </td>
@@ -101,6 +107,9 @@
                         <thead>
                             <tr>
                                 <th>
+                                    ID
+                                </th>
+                                <th>
                                     Photo
                                 </th>
                                 <th>
@@ -121,23 +130,22 @@
                         <tbody>
                             <tr>
                                 <td>
+                                   
+                                </td>
+                                <td>
                                     @*<img src="@item.PhotoLink" width="100" />*@
                                 </td>
                                 <td>
-                                    
                                 </td>
                                 <td>
-                                    
                                 </td>
                                 <td>
-                                    
                                 </td>
                                 <td>
-                                    
                                 </td>
                                 <td>
                                     @*<button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-        <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
+            <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
                                 </td>
                             </tr>
                         </tbody>
@@ -148,8 +156,8 @@
             <!--hidden form input-->
             @for (int i = 0; i < Model.ProductSelection.Count; i++)
             {
-                <input type="text" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" />
-                <input type="text" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
+                <input type="hidden" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" id="@Model.ProductSelection[i].ProductID" />
+                <input type="hidden" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
             }
 
             <div class="form-group">
@@ -171,57 +179,68 @@
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
-            var ppeTable = $('#ppe-table').DataTable(/*{
-                "order": [[1, "asc"]],
-                "dom": '<"pull-left"f>ti',
-                "paging": false,
-
-                //settings for responsive view - no details button and column priority
-                /*responsive: { details: false },
-                columns: [
-                    { responsivePriority: 3 },
-                    { responsivePriority: 1 },
-                    { responsivePriority: 4 },
-                    { responsivePriority: 6 },
-                    { responsivePriority: 2 },
-                    { responsivePriority: 2 }
-                ]
-            }*/);
-
-            var selectedPPETable = $('#selected-ppe-table').DataTable();
-
-            /*$('#categoryDropdown').on("change", function () {
-                var selectedCat = $('#categoryDropdown').val();
-                if (selectedCat == "--All--") {
-                    ppeTable
-                        .column(2)
-                        .search('', true, false)
-                        .draw();
-                }
-                else {
-                    ppeTable
-                        .column(2)
-                        .search('^(' + selectedCat + ')$', true, false)
-                        .draw();
-                }
-            });*/
-
-            //TODO: when a user selects to add a product to the list,
-            // - remove it from available table
-            // - add it to visible selected table with a quantity of 1
-            // - add it to the hidden selected table with a quantity of 1
+            var ppeTable = $('#ppe-table').DataTable();
 
            $('#ppe-table tbody').on('click', '#addButton', function (event) {
-                event.preventDefault();
-                var row = ppeTable.row($(this).parents('tr'));
-                var rowNode = row.node();
-                row.remove();
+               event.preventDefault();
+               //get row data
+               //remove row from available table
+               //create a new row element to add to selected table - update quantity to 1
+               //add row to selected table
+               //update hidden table with quantity
 
-                selectedPPETable
-                    .row.add(rowNode)
-                    .draw();
+               var currentRow = $(this).closest("tr");
+
+               var col1 = currentRow.find("td:eq(0)").html(); // get current row 1st table cell TD value
+               var col2 = currentRow.find("td:eq(1)").html(); // get current row 2nd table cell TD value
+               var col3 = currentRow.find("td:eq(2)").html(); // get current row 3rd table cell  TD value
+               var col4 = currentRow.find("td:eq(3)").html(); // get current row 4th table cell  TD value
+               var col5 = currentRow.find("td:eq(4)").html(); // get current row 5th table cell  TD value
+
+               var drRow = ppeTable.row($(this).parents("tr"));
+               drRow.remove();
+               ppeTable.draw();
+
+               var idNum = parseInt(col1);
+
+               $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td><input type='button' class='remove' value='Remove'</td></tr> ");
+
+               alert(idNum);
+               $("#"+idNum).next().val(1);
+               myVal = $("#"+idNum).next().val();
+               alert(myVal);
+                
+           });
+
+            $("#selected-ppe-table tbody").on('change', '.quantityUpdate', function (event) {
+                //on change of quantity, update hidden form field for this product
+                var updatedValue = $(this).val();
+                var currentRow = $(this).closest("tr");
+                var firstCol = currentRow.find("td:eq(0)").html();
+                var idNum = parseInt(firstCol);
+
+                alert(idNum);
+                $("#" + idNum).next().val(updatedValue);
+                myVal = $("#" + idNum).next().val();
+                alert(myVal);
             });
 
+            $("#selected-ppe-table tbody").on('click', '.remove', function (event) {
+                //on click of remove button
+                //- update hidden form field for this product
+                //- add item back to available products - need to know quantity available - may have to store this in a hidden field somewhere
+                var updatedValue = $(this).val();
+                var currentRow = $(this).closest("tr");
+                var firstCol = currentRow.find("td:eq(0)").html();
+                var idNum = parseInt(firstCol);
+
+                alert(idNum);
+                $("#" + idNum).next().val(updatedValue);
+                myVal = $("#" + idNum).next().val();
+                alert(myVal);
+            });
+             
+        
             $(document).keypress(
                 function (event) {
                     if (event.which == '13') {
