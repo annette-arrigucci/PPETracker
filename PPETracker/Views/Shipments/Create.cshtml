@@ -124,16 +124,20 @@
                                 <th>
                                     Quantity to Ship
                                 </th>
+                                <th>
+                                    Quantity Available
+                                </th>
                                 <th>NA</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                   
                                 </td>
                                 <td>
                                     @*<img src="@item.PhotoLink" width="100" />*@
+                                </td>
+                                <td>
                                 </td>
                                 <td>
                                 </td>
@@ -191,56 +195,98 @@
 
                var currentRow = $(this).closest("tr");
 
-               var col1 = currentRow.find("td:eq(0)").html(); // get current row 1st table cell TD value
-               var col2 = currentRow.find("td:eq(1)").html(); // get current row 2nd table cell TD value
-               var col3 = currentRow.find("td:eq(2)").html(); // get current row 3rd table cell  TD value
-               var col4 = currentRow.find("td:eq(3)").html(); // get current row 4th table cell  TD value
-               var col5 = currentRow.find("td:eq(4)").html(); // get current row 5th table cell  TD value
+               var col1 = currentRow.find("td:eq(0)").html(); // get ID
+               var col2 = currentRow.find("td:eq(1)").html(); // get photo
+               var col3 = currentRow.find("td:eq(2)").html(); // get name
+               var col4 = currentRow.find("td:eq(3)").html(); // get category
+               var col5 = currentRow.find("td:eq(4)").html(); // get brand
+               var col6 = currentRow.find("td:eq(5)").html(); // get quantity available
 
                var drRow = ppeTable.row($(this).parents("tr"));
                drRow.remove();
-               ppeTable.draw();
+               ppeTable.draw(false);
 
                var idNum = parseInt(col1);
 
-               $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td><input type='button' class='remove' value='Remove'</td></tr> ");
+               $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><input type='button' class='remove' value='Remove'</td></tr> ");
 
                alert(idNum);
                $("#"+idNum).next().val(1);
                myVal = $("#"+idNum).next().val();
                alert(myVal);
-                
+
            });
 
             $("#selected-ppe-table tbody").on('change', '.quantityUpdate', function (event) {
                 //on change of quantity, update hidden form field for this product
                 var updatedValue = $(this).val();
+                var numToOrder = parseInt(updatedValue);
+
                 var currentRow = $(this).closest("tr");
+
+                var seventhCol = currentRow.find("td:eq(6)").html();
+                var numAvail = parseInt(seventhCol);
+
                 var firstCol = currentRow.find("td:eq(0)").html();
                 var idNum = parseInt(firstCol);
 
-                alert(idNum);
-                $("#" + idNum).next().val(updatedValue);
-                myVal = $("#" + idNum).next().val();
-                alert(myVal);
+
+                if (numToOrder == 0) {
+                    alert("Quantity cannot be 0. Please remove item or change quantity.");
+                    var prevQuantity = $("#" + idNum).next().val();
+                    $(this).val(prevQuantity);
+                }
+                else if (numToOrder > numAvail) {
+                    alert("Quantity selected to order greater than quantity available. Please change quantity.");
+                    var prevQuantity = $("#" + idNum).next().val();
+                    $(this).val(prevQuantity);
+                }
+                else {
+                    alert(idNum);
+                    $("#" + idNum).next().val(updatedValue);
+                    myVal = $("#" + idNum).next().val();
+                    alert(myVal);
+                }
             });
 
             $("#selected-ppe-table tbody").on('click', '.remove', function (event) {
                 //on click of remove button
-                //- update hidden form field for this product
-                //- add item back to available products - need to know quantity available - may have to store this in a hidden field somewhere
-                var updatedValue = $(this).val();
+                //- update hidden form field for this product - set quantity back to 0
+                //- get data and create a row to add back to available products
+                //- add item back to available products
                 var currentRow = $(this).closest("tr");
-                var firstCol = currentRow.find("td:eq(0)").html();
-                var idNum = parseInt(firstCol);
+
+                var col1 = currentRow.find("td:eq(0)").html(); // get ID
+                var col2 = currentRow.find("td:eq(1)").html(); // get photo
+                var col3 = currentRow.find("td:eq(2)").html(); // get name
+                var col4 = currentRow.find("td:eq(3)").html(); // get category
+                var col5 = currentRow.find("td:eq(4)").html(); // get brand
+                var col6 = currentRow.find("td:eq(6)").html(); // get quantity available
+
+                var idNum = parseInt(col1);
 
                 alert(idNum);
-                $("#" + idNum).next().val(updatedValue);
+                $("#" + idNum).next().val(0);
                 myVal = $("#" + idNum).next().val();
                 alert(myVal);
+
+                //remove from selected table
+                currentRow.remove();
+
+                ppeTable.row.add([
+                    col1,
+                    "",
+                    col3,
+                    col4,
+                    col5,
+                    col6,
+                    "<button class='btn btn-info btn-responsive' onclick='ViewProductDetails('" + col1 + "')'>Details</button>"
+                    + "<button class='btn btn-info btn-responsive' id='addButton'>Add</button>"
+                ]);
+                ppeTable.draw(false);
             });
-             
-        
+
+
             $(document).keypress(
                 function (event) {
                     if (event.which == '13') {
