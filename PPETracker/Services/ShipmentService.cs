@@ -25,11 +25,15 @@ namespace PPETracker.Services
         public CreateShipmentCommand GetCreateModelWithProducts()
         {
             var products = _productService.GetProducts();
+            //only include products that are in stock
+            var availProducts = products.Where(p => p.Quantity > 0).ToList();
             CreateShipmentCommand model = new CreateShipmentCommand();
-            model.AvailableProductList = products;
-            model.ProductSelection = InitializeProductSelection(products);
+            //set ship date default to today
+            model.ScheduledShipDate = DateTime.Now;
+            model.AvailableProductList = availProducts;
+            model.ProductSelection = InitializeProductSelection(availProducts);
             model.RecipientSelectionList = GetRecipientList();
-            model.CategoryList = _categoryService.GetCategoryList();
+            model.CategoryList = _categoryService.GetCategoryNamesList();
             return model;
         }
 

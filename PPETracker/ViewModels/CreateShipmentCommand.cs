@@ -11,12 +11,15 @@ namespace PPETracker.ViewModels
     public class CreateShipmentCommand
     {
         [Required]
+        [Display(Name = "Scheduled Ship Date")]
         public DateTime ScheduledShipDate { get; set; }
 
         [Required]
+        [Display(Name = "Recipient")]
         public int RecipientID { get; set; }
 
         [StringLength(100)]
+        [Display(Name = "Comments")]
         public string Comments { get; set; }
 
         public string UserName { get; set; }

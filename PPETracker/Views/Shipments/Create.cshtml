@@ -6,22 +6,21 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
 <h1>Create Shipment</h1>
-
-<h4>CreateShipmentCommand</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ScheduledShipDate" class="control-label"></label>
-                <input asp-for="ScheduledShipDate" class="form-control" />
+                <input type="text" name="ScheduledShipDate" id="scheduled-ship-date" class="form-control" value="@Model.ScheduledShipDate.ToString("MM/dd/yy")" />
                 <span asp-validation-for="ScheduledShipDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RecipientID" class="control-label"></label>
+                <label asp-for="RecipientID" class="control-label"></label><br />
                 <select asp-for="RecipientID" asp-items="Model.RecipientSelectionList">
                     <option value="" disabled selected>--Select recipient--</option>
                 </select><br />
@@ -29,193 +28,214 @@
             </div>
             <div class="form-group">
                 <label asp-for="Comments" class="control-label"></label>
-                <input asp-for="Comments" class="form-control" />
+                <textarea asp-for="Comments" class="form-control"></textarea>
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label class="bold-label">Available Products</label><br />
+                <label class="bold-label text-center">Available Products</label><br />
+
+                <label class="control-label">Filter by Category:</label>
                 <select asp-items="Model.CategoryList" id="categoryDropdown" style="margin-bottom: 20px;">
-                    <option value="" disabled selected>--Select category--</option>
+                    <option value="--All--" selected>--All--</option>
                 </select><br />
             </div>
-
-            <!--TODO: div to hide/show table when category selected-->
-            <div class="row" id="available-ppe-item-table">
-                <div class="col-sm-12">
-                    <table class="table" id="ppe-table" width="100%">
-                        <thead>
-                            <tr>
-                                <th>
-                                    ID
-                                </th>
-                                <th>
-                                    Photo
-                                </th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Category
-                                </th>
-                                <th>
-                                    Brand
-                                </th>
-                                <th>
-                                    Quantity Available
-                                </th>
-                                <th>NA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.AvailableProductList)
-                            {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ID)
-                                    </td>
-                                    <td>
-                                        @*<img src="@item.PhotoLink" width="100" />*@
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CategoryName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Brand)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Quantity)
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                        <button class="btn btn-info btn-responsive" id="addButton">Add</button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!--TODO: Table shows products selected-->
-            <div class="row" id="selected-ppe-item-table">
-                <label class="bold-label">Selected Products</label><br />
-                <div class="col-sm-12">
-                    <table class="table" id="selected-ppe-table" width="100%">
-                        <thead>
-                            <tr>
-                                <th>
-                                    ID
-                                </th>
-                                <th>
-                                    Photo
-                                </th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Category
-                                </th>
-                                <th>
-                                    Brand
-                                </th>
-                                <th>
-                                    Quantity to Ship
-                                </th>
-                                <th>
-                                    Quantity Available
-                                </th>
-                                <th>NA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        </div>
+    </div>
+        <!--div to hide/show table when category selected-->
+        <div class="row" id="available-ppe-item-table">
+            <div class="col-sm-12">
+                <table class="table" id="ppe-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Photo
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th>
+                                Brand
+                            </th>
+                            <th>
+                                Quantity Available
+                            </th>
+                            <th>NA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.AvailableProductList)
+                        {
                             <tr>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.ID)
                                 </td>
                                 <td>
                                     @*<img src="@item.PhotoLink" width="100" />*@
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.CategoryName)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Brand)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.Quantity)
                                 </td>
                                 <td>
-                                </td>
-                                <td>
-                                    @*<button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-            <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
+                                    <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+                                    <button class="btn btn-info btn-responsive" id="addButton">Add</button>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
-
-            <!--hidden form input-->
-            @for (int i = 0; i < Model.ProductSelection.Count; i++)
-            {
-                <input type="hidden" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" id="@Model.ProductSelection[i].ProductID" />
-                <input type="hidden" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
-            }
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+        <!--Table shows products selected-->
+        <div class="row" id="selected-ppe-item-table">
+            <label class="bold-label text-center">Selected Products</label><br />
+            <div class="col-sm-12">
+                <table class="table" id="selected-ppe-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Photo
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th>
+                                Brand
+                            </th>
+                            <th>
+                                Quantity to Ship
+                            </th>
+                            <th>
+                                Quantity Available
+                            </th>
+                            <th>NA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                @*<img src="@item.PhotoLink" width="100" />*@
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                @*<button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+                                    <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <!--hidden form input-->
+        @for (int i = 0; i < Model.ProductSelection.Count; i++)
+        {
+            <input type="hidden" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" id="@Model.ProductSelection[i].ProductID" />
+            <input type="hidden" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
+        }
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+</form>
+
+<!-- Product details modal goes here -->
+<div id="prodDetails"></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
+            $(function () {
+                $("#scheduled-ship-date").datepicker();
+            });
+
             var ppeTable = $('#ppe-table').DataTable();
 
-           $('#ppe-table tbody').on('click', '#addButton', function (event) {
-               event.preventDefault();
-               //get row data
-               //remove row from available table
-               //create a new row element to add to selected table - update quantity to 1
-               //add row to selected table
-               //update hidden table with quantity
+            $('#categoryDropdown').on("change", function () {
+                var selectedCat = $('#categoryDropdown').val();
+                if (selectedCat == "--All--") {
+                    ppeTable
+                        .column(3)
+                        .search('', true, false)
+                        .draw();
+                }
+                else {
+                    ppeTable
+                        .column(3)
+                        .search('^(' + selectedCat + ')$', true, false)
+                        .draw();
+                }
+            });
 
-               var currentRow = $(this).closest("tr");
+            $('#ppe-table tbody').on('click', '#addButton', function (event) {
+                event.preventDefault();
+                //get row data
+                //remove row from available table
+                //create a new row element to add to selected table - update quantity to 1
+                //add row to selected table
+                //update hidden table with quantity
 
-               var col1 = currentRow.find("td:eq(0)").html(); // get ID
-               var col2 = currentRow.find("td:eq(1)").html(); // get photo
-               var col3 = currentRow.find("td:eq(2)").html(); // get name
-               var col4 = currentRow.find("td:eq(3)").html(); // get category
-               var col5 = currentRow.find("td:eq(4)").html(); // get brand
-               var col6 = currentRow.find("td:eq(5)").html(); // get quantity available
+                var currentRow = $(this).closest("tr");
 
-               var drRow = ppeTable.row($(this).parents("tr"));
-               drRow.remove();
-               ppeTable.draw(false);
+                var col1 = currentRow.find("td:eq(0)").html(); // get ID
+                var col2 = currentRow.find("td:eq(1)").html(); // get photo
+                var col3 = currentRow.find("td:eq(2)").html(); // get name
+                var col4 = currentRow.find("td:eq(3)").html(); // get category
+                var col5 = currentRow.find("td:eq(4)").html(); // get brand
+                var col6 = currentRow.find("td:eq(5)").html(); // get quantity available
 
-               var idNum = parseInt(col1);
+                var drRow = ppeTable.row($(this).parents("tr"));
+                drRow.remove();
+                ppeTable.draw(false);
 
-               $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><input type='button' class='remove' value='Remove'</td></tr> ");
+                var idNum = parseInt(col1);
 
-               alert(idNum);
-               $("#"+idNum).next().val(1);
-               myVal = $("#"+idNum).next().val();
-               alert(myVal);
+                $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><input type='button' class='remove' value='Remove'</td></tr> ");
 
-           });
+                alert(idNum);
+                $("#" + idNum).next().val(1);
+                myVal = $("#" + idNum).next().val();
+                alert(myVal);
+
+            });
 
             $("#selected-ppe-table tbody").on('change', '.quantityUpdate', function (event) {
                 //on change of quantity, update hidden form field for this product
@@ -280,7 +300,7 @@
                     col4,
                     col5,
                     col6,
-                    "<button class='btn btn-info btn-responsive' onclick='ViewProductDetails('" + col1 + "')'>Details</button>"
+                    "<button class='btn btn-info btn-responsive' onclick='ViewProductDetails(\"" +idNum+ "\")'>Details</button>"
                     + "<button class='btn btn-info btn-responsive' id='addButton'>Add</button>"
                 ]);
                 ppeTable.draw(false);
@@ -294,5 +314,16 @@
                     }
                 });
         });
+
+        function ViewProductDetails(idNum) {
+            //call controller action to get product details and return partial view
+            var url = '@Url.Action("Details", "Products")?productID=' + idNum;
+            $('#prodDetails').load(url,
+                function () {
+                    //display modal
+                    $('#prodDetailsModal').modal('show');
+                }
+            );
+        }
     </script>
 }
