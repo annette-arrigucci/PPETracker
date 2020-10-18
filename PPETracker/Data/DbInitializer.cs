@@ -66,7 +66,7 @@ namespace PPETracker.Data
 
         public static void CreateUsers(UserManager<ApplicationUser> userManager)
         {
-            //create two admin users
+            //create three admin users
             if (userManager.FindByEmailAsync("john.tom.abc@gmail.com").Result == null)
             {
                 var user1 = new ApplicationUser();
@@ -83,6 +83,16 @@ namespace PPETracker.Data
                 user2.Email = "annette.arrigucci@gmail.com";
                 user2.UserName = "annette.arrigucci@gmail.com";
                 var password = "Abc123$";
+                user2.IsAdmin = true;
+                IdentityResult result = userManager.CreateAsync(user2, password).Result;
+            }
+
+            if (userManager.FindByEmailAsync("ppedemo@mailinator.com").Result == null)
+            {
+                var user2 = new ApplicationUser();
+                user2.Email = "ppedemo@mailinator.com";
+                user2.UserName = "ppedemo@mailinator.com";
+                var password = "Abc321$";
                 user2.IsAdmin = true;
                 IdentityResult result = userManager.CreateAsync(user2, password).Result;
             }

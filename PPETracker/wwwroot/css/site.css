@@ -28,6 +28,7 @@ a {
 -------------------------------------------------- */
 html {
   font-size: 14px;
+  
 }
 @media (min-width: 768px) {
   html {
@@ -61,6 +62,7 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  font-family: 'Open Sans', 'Segoe UI', sans-serif !important;
 }
 .footer {
   position: absolute;
@@ -84,6 +86,7 @@ body {
 /*for mobile, bump up font size */
 body {
     font-size: 1.2rem !important;
+    font-family: 'Open Sans', 'Segoe UI', sans-serif !important;
 }
 
 /*for mobile, bump up font size on form */
@@ -105,9 +108,40 @@ body {
 
     body {
         font-size: 100% !important;
+        font-family: 'Open Sans', 'Segoe UI', sans-serif !important;
     }
 
     .btn-responsive {
         margin: 0 5px 5px 5px !important;
     }
+}
+
+/* font styles for headers and partial login */
+h1 {
+    font-family: 'Commissioner', 'Segoe UI', sans-serif;
+    font-size: 3rem !important;
+}
+
+.logo-title {
+    font-family: 'Commissioner', 'Segoe UI', sans-serif;
+    font-size: 1.3rem !important;
+    display: block !important;
+}
+
+.navbar-color-all {
+    background-color: #007CC7 !important;
+}
+
+.nav-text-white {
+    color: #EEFBFB !important;
+}
+
+.modal-header-color {
+    background-color: #007CC7 !important;
+    color: #EEFBFB !important;
+}
+
+h3 {
+    font-family: 'Commissioner', 'Segoe UI', sans-serif;
+    font-size: 2rem !important;
 }
