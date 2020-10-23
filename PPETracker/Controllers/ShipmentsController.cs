@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using PPETracker.ViewModels;
 
 namespace PPETracker.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Identity.Application", Policy = "IsAdmin")]
     public class ShipmentsController : Controller
     {
         public ProductService _service;
@@ -28,9 +30,10 @@ namespace PPETracker.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
-            return View();
+            var model = _shipService.GetShipments();
+            return View(model);
         }
 
         [HttpGet]
@@ -50,8 +53,11 @@ namespace PPETracker.Controllers
                 ModelState.AddModelError("ScheduledShipDate", "Date cannot be before today's date");
             }
 
+            //get the selected products from the list that was returned
+            List<ProductSelectionItem> selectedProducts = _shipService.GetSelectedProducts(model.ProductSelection);
+
             //check that each shipment product selection is valid
-            List<string> errorMessages = _shipService.CheckSelectedProducts(model.ProductSelection);
+            List<string> errorMessages = _shipService.CheckSelectedProducts(selectedProducts);
             foreach (var message in errorMessages)
             {
                 ModelState.AddModelError("", message);
@@ -69,8 +75,8 @@ namespace PPETracker.Controllers
 
                 //Get the shipment ID 
                 int shipmentID = _shipService.CreateShipment(model);
-
-                _shipService.CreateShipmentProductRecords(shipmentID, model.ProductSelection);
+                
+                _shipService.CreateShipmentProductRecords(shipmentID, selectedProducts);
 
                 //Redirect to Shipments Dashboard
                 return RedirectToAction("Dashboard", "Products");

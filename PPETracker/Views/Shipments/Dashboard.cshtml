@@ -1,7 +1,7 @@
-﻿@model IEnumerable<PPETracker.ViewModels.ProductSummaryViewModel>
+﻿@model IEnumerable<PPETracker.ViewModels.ShipmentSummaryViewModel>
 
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "Shipments";
 }
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
@@ -12,47 +12,46 @@
         float: left !important;
     }
 </style>
-<h1 class="text-center">Products</h1>
+<h1 class="text-center">Shipments</h1>
 
 <div class="container">
-    @if (ViewBag.IsUserAdmin == true)
-    {
-        <div class="row">
-            <div class="col-sm-2">
-                <a asp-action="AddNew" class="btn btn-success" style="margin-bottom: 20px !important;">Add New</a>
-            </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <a asp-action="Create" class="btn btn-success" style="margin-bottom: 20px !important;">Add New</a>
         </div>
-    }
+    </div>
 
     <div class="row">
         <div class="col-sm-6">
-            <label class="control-label">Filter by Category: </label>
-            <select id="categoryDropdown" asp-items="ViewBag.CategoryOptions" style="margin-bottom: 20px;">
+            <label class="control-label">Filter by Shipped Status: </label>
+            <select id="shipStatusDropdown" style="margin-bottom: 20px;">
                 <option value="--All--" selected>--All--</option>
+                <option value="No">Unshipped</option>
+                <option value="Yes">Shipped</option>
             </select><br />
         </div>
     </div>
 
     <div class="row">
         <div class="col-sm-12">
-            <table class="table" id="ppe-table" width="100%">
+            <table class="table" id="shipments-table" width="100%">
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.PhotoLink)
+                            @Html.DisplayNameFor(model => model.ID)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Name)
+                            @Html.DisplayNameFor(model => model.ShippedStatus)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.CategoryName)
-                        </th>
-
-                        <th>
-                            @Html.DisplayNameFor(model => model.Brand)
+                            @Html.DisplayNameFor(model => model.ScheduledShipDate)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Quantity)
+                            @Html.DisplayNameFor(model => model.ActualShipDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.RecipientName)
                         </th>
                         <th></th>
                     </tr>
@@ -62,31 +61,31 @@
                     {
                         <tr>
                             <td>
-                                <img src="@item.PhotoLink" width="100" />
+                                @Html.DisplayFor(modelItem => item.ID)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CategoryName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Brand)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Quantity)
-                                @if (ViewBag.IsUserAdmin == true)
+                                @if(item.ShippedStatus == "Y")
                                 {
-                                    <button class="btn btn-primary btn-responsive" style="margin-left: 10px;" onclick="EditProductQuantity('@item.ID')">Edit</button>
+                                    @Html.Raw("Yes")
+                                }
+                                else
+                                {
+                                    @Html.Raw("No")
                                 }
                             </td>
                             <td>
+                                @item.ScheduledShipDate.ToString("MM/dd/yy")
+                            </td>
+                            <td>
+                                @string.Format("{0:MM/dd/yy}", item.ActualShipDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RecipientName)
+                            <td>
+                                <button class="btn btn-success btn-responsive" onclick="Ship('@item.ID')">Ship</button>
                                 <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                @if (ViewBag.IsUserAdmin == true)
-                                {
-                                    @Html.ActionLink("Edit Product", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-primary btn-responsive" })
-                                    <button class="btn btn-danger btn-responsive" onclick="DeleteProduct('@item.ID')">Delete</button>
-                                }
+                                @Html.ActionLink("Edit", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-primary btn-responsive" })
+                                <button class="btn btn-danger btn-responsive" onclick="DeleteProduct('@item.ID')">Delete</button>
                             </td>
                         </tr>
                     }
@@ -94,24 +93,16 @@
             </table>
         </div>
     </div>
-    @if (ViewBag.IsUserAdmin == true)
-    {
-        <div class="row">
-            <div class="col-sm-4">
-                <a asp-action="DeactivatedProducts" class="btn btn-sm btn-secondary" style="margin: 20px 0px;">Deactivated Products</a>
-            </div>
-        </div>
-    }
 </div>
 
-<!-- Product quantity modal goes here -->
-<div id="updateProdQuantity"></div>
+<!-- Ship shipment modal goes here -->
+<div id="shipShipment"></div>
 
-<!-- Product details modal goes here -->
-<div id="prodDetails"></div>
+<!-- Shipment details modal goes here -->
+<div id="shipDetails"></div>
 
-<!--Product delete modal goes here-->
-<div id="prodDelete"></div>
+<!--Shipment delete modal goes here-->
+<div id="shipDelete"></div>
 
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -121,20 +112,10 @@
 
     <script type="text/javascript" charset="utf8">
         $(document).ready(function () {
-            var ppeTable = $('#ppe-table').DataTable({
+            var shipTable = $('#shipments-table').DataTable({
                 "order": [[1, "asc"]],
                 "dom": '<"pull-left"f>ti',
-                "paging": false,
-                //settings for responsive view - no details button and column priority
-                responsive: { details: false },
-                columns: [
-                    { responsivePriority: 3 },
-                    { responsivePriority: 1 },
-                    { responsivePriority: 4 },
-                    { responsivePriority: 6 },
-                    { responsivePriority: 2 },
-                    { responsivePriority: 2 }
-                ]
+                "paging": false
             });
 
             $(document).keypress(
@@ -144,24 +125,24 @@
                     }
                 });
 
-            $('#categoryDropdown').on("change", function () {
-                var selectedCat = $('#categoryDropdown').val();
-                if (selectedCat == "--All--") {
-                    ppeTable
-                    .column(2)
+            $('#shipStatusDropdown').on("change", function () {
+                var selectedStatus = $('#shipStatusDropdown').val();
+                if (selectedStatus == "--All--") {
+                    shipTable
+                    .column(1)
                     .search('', true, false)
                     .draw();
                 }
                 else {
-                    ppeTable
-                        .column(2)
-                        .search('^(' + selectedCat + ')$', true, false)
+                    shipTable
+                        .column(1)
+                        .search('^(' + selectedStatus + ')$', true, false)
                         .draw();
                 }
             });
         });
 
-        function EditProductQuantity(idNum) {
+        @*function EditProductQuantity(idNum) {
             //call controller action to get product details and return partial view
             var url = '@Url.Action("UpdateProductQuantity", "Products")?productID=' + idNum;
             $('#updateProdQuantity').load(url,
@@ -193,7 +174,7 @@
                     $('#productDeleteModal').modal('show');
                 }
             );
-        }
+        }*@
     </script>
 
 }

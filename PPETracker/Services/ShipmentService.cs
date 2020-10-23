@@ -59,6 +59,14 @@ namespace PPETracker.Services
                 }).ToList();
             return recipientsList;
         }
+
+        //return name of recipient given a recipient ID
+        public string GetRecipientName(int ID)
+        {
+            string recName = _context.Recipients.Where(p => p.ID == ID).Select(p => p.Name).FirstOrDefault();
+            return recName;
+        }
+
         //TODO: Add Create Shipment method
         public int CreateShipment(CreateShipmentCommand model)
         {
@@ -71,17 +79,24 @@ namespace PPETracker.Services
                 UserName = model.UserName
             };
             _context.Shipments.Add(shipmentToAdd);
+            _context.SaveChanges();
             return shipmentToAdd.ID;
+        }
+
+        public List<ProductSelectionItem> GetSelectedProducts(List<ProductSelectionItem> productQuantityList)
+        {
+            //get a list of all products that have quantity greater than zero
+            var selectedList = productQuantityList.Where(p => p.QuantityForOrder > 0).Select(p => p).ToList();
+            return selectedList;
         }
 
         public List<string> CheckSelectedProducts(List<ProductSelectionItem> selectedProductList)
         {
             //validate each selection on the list
             List<string> errorMessages = new List<string>();
-            //get a list of all products that have quantity greater than zero
-            var selectedList = selectedProductList.Where(p => p.QuantityForOrder > 0).Select(p => p).ToList();
+
             //validate that product ID is valid, validate that quantity selected is less than or equal to quantity available
-            foreach (var item in selectedList)
+            foreach (var item in selectedProductList)
             {
                 string productValidMessage = _productService.IsProductIDValid(item.ProductID);
                 if(productValidMessage != "Active")
@@ -120,6 +135,26 @@ namespace PPETracker.Services
         //TODO: Add Edit Shipment methods
         //TODO: Add Delete Shipment methods
         //TODO: Add View Shipment methods 
+        public List<ShipmentSummaryViewModel> GetShipments()
+        {
+            var results = _context.Shipments
+                .Select(p => new ShipmentSummaryViewModel
+                {
+                    ID = p.ID,
+                    ShippedStatus = p.ShipStatus,
+                    ScheduledShipDate = p.ScheduledShipDate,
+                    ActualShipDate = p.ActualShipDate,
+                    RecipientID = p.RecipientID,
+                });
+            var resultList = results.ToList();
+            foreach (var r in resultList)
+            {
+                //look up recipient ID
+                var recName = GetRecipientName(r.RecipientID);
+                r.RecipientName = recName;
+            }
+            return resultList;
+        }
         //TODO: Add View all shipment records method
     }
 }
