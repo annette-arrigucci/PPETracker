@@ -82,7 +82,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.RecipientName)
                             <td>
-                                <button class="btn btn-success btn-responsive" onclick="Ship('@item.ID')">Ship</button>
+                                <button class="btn btn-success btn-responsive" onclick="ShipShipment('@item.ID')">Ship</button>
                                 <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
                                 @Html.ActionLink("Edit", "Edit", "Products", new { id = item.ID }, new { @class = "btn btn-primary btn-responsive" })
                                 <button class="btn btn-danger btn-responsive" onclick="DeleteProduct('@item.ID')">Delete</button>
@@ -142,19 +142,19 @@
             });
         });
 
-        @*function EditProductQuantity(idNum) {
+        function ShipShipment(idNum) {
             //call controller action to get product details and return partial view
-            var url = '@Url.Action("UpdateProductQuantity", "Products")?productID=' + idNum;
-            $('#updateProdQuantity').load(url,
+            var url = '@Url.Action("Ship", "Shipments")?shipmentID=' + idNum;
+            $('#shipShipment').load(url,
                 function () {
-                    $.validator.unobtrusive.parse("#updateQuantityModal");
+                    //$.validator.unobtrusive.parse("#updateQuantityModal");
                     //display modal
                     $('#updateQuantityModal').modal('show');
                 }
             );
         }
 
-        function ViewProductDetails(idNum) {
+        @*function ViewProductDetails(idNum) {
             //call controller action to get product details and return partial view
             var url = '@Url.Action("Details", "Products")?productID=' + idNum;
             $('#prodDetails').load(url,

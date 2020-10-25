@@ -82,5 +82,25 @@ namespace PPETracker.Controllers
                 return RedirectToAction("Dashboard", "Products");
             }
         }
+
+        public IActionResult Ship(int? shipmentID)
+        {
+            //check if shipment ID is valid
+            if(shipmentID == null)
+            {
+                throw new Exception("Invalid Shipment ID");
+            }
+
+            //check if shipment ID is in table
+            bool isValid = _shipService.IsShipmentIDValid((int)shipmentID);
+            if(isValid == false)
+            {
+                throw new Exception("Shipment ID not found");
+            }
+
+            //look up shipment details to display
+            var model = _shipService.GetShipmentDetails((int)shipmentID);
+            return PartialView("_Ship", model);
+        }
     }
 }

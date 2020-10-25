@@ -135,6 +135,40 @@ namespace PPETracker.Services
         //TODO: Add Edit Shipment methods
         //TODO: Add Delete Shipment methods
         //TODO: Add View Shipment methods 
+        public ShipmentDetailViewModel GetShipmentDetails(int shipmentID)
+        {
+            var detItem = _context.Shipments
+                .Select(p => new ShipmentDetailViewModel
+                {
+                    ID = p.ID,
+                    RecipientID = p.RecipientID,
+                    ScheduledShipDate = p.ScheduledShipDate,
+                    ActualShipDate = p.ActualShipDate,
+                    Comments = p.Comments
+                }).FirstOrDefault();
+            //look up recipient name
+            detItem.RecipientName = GetRecipientName(detItem.RecipientID);
+
+            //look up product details
+            //get list of products on shipment
+            var shipProducts = _context.ShipmentProducts
+                .Where(p => p.ID == detItem.ID)
+                .Select(p => new ProductSummaryForShipment { 
+                    ID = p.ProductID,
+                    QuantityOnShipment = p.Quantity
+                })
+                .ToList();
+
+            //for each product on shipment, get the product name
+            foreach(var prod in shipProducts)
+            {
+                prod.Name = _productService.GetProductName(prod.ID);
+            }
+
+            detItem.ProductsOnShipment = shipProducts;
+
+            return detItem;
+        }
         public List<ShipmentSummaryViewModel> GetShipments()
         {
             var results = _context.Shipments
@@ -156,5 +190,19 @@ namespace PPETracker.Services
             return resultList;
         }
         //TODO: Add View all shipment records method
+
+        //check whether shipment ID is in table
+        public bool IsShipmentIDValid(int shipmentID)
+        {
+            var result = _context.Shipments.Where(p => p.ID == shipmentID).FirstOrDefault();
+            if(result == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }
