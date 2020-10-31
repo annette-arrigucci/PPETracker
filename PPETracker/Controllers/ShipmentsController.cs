@@ -37,6 +37,17 @@ namespace PPETracker.Controllers
         }
 
         [HttpGet]
+        public IActionResult Details(int? shipmentID)
+        {
+            if(shipmentID == null)
+            {
+                throw new Exception("Invalid shipment ID");
+            }
+            ShipmentDetailViewModel model = _shipService.GetShipmentDetails((int)shipmentID);
+            return PartialView("_Details", model);
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             CreateShipmentCommand model = _shipService.GetCreateModelWithProducts();
@@ -87,6 +98,58 @@ namespace PPETracker.Controllers
             }
         }
 
+        /*[HttpGet]
+        public IActionResult Edit(int shipmentID)
+        {
+            //don't allow edit if shipment has shipped
+            CreateShipmentCommand model = _shipService.GetEditModelWithProducts(shipmentID);
+            return View(model);
+        }*/
+
+        /*[HttpPost]
+        public IActionResult Edit(EditShipmentCommand model)
+        {
+            //model Validations go here
+            //check shipping date
+            if (model.ScheduledShipDate < DateTime.Now.AddMonths(-6))
+            {
+                ModelState.AddModelError("ScheduledShipDate", "Date cannot be older than six months ago");
+            }
+
+            //get the selected products from the list that was returned
+            List<ProductSelectionItem> selectedProducts = _shipService.GetSelectedProducts(model.ProductSelection);
+
+            //check that each shipment product selection is valid
+            List<string> errorMessages = _shipService.CheckSelectedProducts(selectedProducts);
+            foreach (var message in errorMessages)
+            {
+                ModelState.AddModelError("", message);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.AvailableProductList = _service.GetAvailableProducts();
+                model.ProductSelection = _shipService.InitializeProductSelection(model.AvailableProductList);
+                model.RecipientSelectionList = _shipService.GetRecipientList();
+                model.CategoryList = _catService.GetCategoryNamesList();
+                return View(model);
+            }
+            else
+            {
+                //Create the shipment
+                //get the username
+                model.UserName = User.Identity.Name;
+
+                //Get the shipment ID 
+                int shipmentID = _shipService.CreateShipment(model);
+
+                _shipService.CreateShipmentProductRecords(shipmentID, selectedProducts);
+
+                //Redirect to Shipments Dashboard
+                return RedirectToAction("Dashboard", "Shipments");
+            }
+        }*/
+
         [HttpGet]
         public IActionResult Ship(int? shipmentID)
         {
@@ -112,6 +175,14 @@ namespace PPETracker.Controllers
 
             //look up shipment details to display
             var model = _shipService.GetShipmentDetails((int)shipmentID);
+            if(model.ProductsOnShipment.Count == 0)
+            {
+                ViewBag.HasZeroItems = true;
+            }
+            else
+            {
+                ViewBag.HasZeroItems = false;
+            }
             return PartialView("_Ship", model);
         }
 
@@ -124,10 +195,44 @@ namespace PPETracker.Controllers
             {
                 throw new Exception("Shipment ID not found");
             }
+
+            //check if there are zero items on shipment
+            int numItemsOnShipment = _shipService.GetNumItemsOnShipment(ID);
+            if(numItemsOnShipment == 0)
+            {
+                throw new Exception("Cannot ship shipment with zero items");
+            }
+
             //change the status of the shipment
             _shipService.ChangeStatusToShipped(ID);
             //ship the products in the shipment - remove them from the inventory
             _shipService.ShipProductsOnShipment(ID);
+            return RedirectToAction("Dashboard", "Shipments");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? shipmentID)
+        {
+            if (shipmentID == null)
+            {
+                throw new Exception("Invalid shipment ID");
+            }
+            ShipmentDetailViewModel model = _shipService.GetShipmentDetails((int)shipmentID);
+            return PartialView("_Delete", model);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int ID)
+        {
+            //check if shipment ID is in table
+            bool isValid = _shipService.IsShipmentIDValid((int)ID);
+            if (isValid == false)
+            {
+                throw new Exception("Shipment ID not found");
+            }
+            //TODO: add delete method here
+
+            //redirect to dashboard
             return RedirectToAction("Dashboard", "Shipments");
         }
     }

@@ -37,6 +37,44 @@ namespace PPETracker.Services
             return model;
         }
 
+       /*public EditShipmentCommand GetEditModelWithProducts(int shipmentID)
+        {
+            //get the existing shipment record
+            var editItem = _context.Shipments
+                .Where(p => p.ID == shipmentID)
+                .Select(p => new EditShipmentCommand
+                {
+                    ID = p.ID,
+                    RecipientID = p.RecipientID,
+                    ScheduledShipDate = p.ScheduledShipDate,
+                    Comments = p.Comments
+                }).FirstOrDefault();
+
+            //look up product details
+            //get list of products on shipment
+            var shipProducts = _context.ShipmentProducts
+                .Where(p => p.ShipmentID == shipmentID)
+                .Select(p => new ProductSummaryForShipment
+                {
+                    ID = p.ProductID,
+                    QuantityOnShipment = p.Quantity
+                })
+                .ToList();
+            //translate the records into data that will be passed into the form
+            //get the lists needed to pass into the form
+            var products = _productService.GetProducts();
+            //only include products that are in stock
+            var availProducts = products.Where(p => p.Quantity > 0).ToList();
+            CreateShipmentCommand model = new CreateShipmentCommand();
+            //set ship date default to today
+            model.ScheduledShipDate = DateTime.Now;
+            model.AvailableProductList = availProducts;
+            model.ProductSelection = InitializeProductSelection(availProducts);
+            model.RecipientSelectionList = GetRecipientList();
+            model.CategoryList = _categoryService.GetCategoryNamesList();
+            return model;
+        }*/
+
         public List<ProductSelectionItem> InitializeProductSelection(List<ProductSummaryViewModel> prodList)
         {
             List<int> prodIDList = prodList.Select(p => p.ID).ToList();
@@ -134,7 +172,8 @@ namespace PPETracker.Services
         }
         //TODO: Add Edit Shipment methods
         //TODO: Add Delete Shipment methods
-        //TODO: Add View Shipment methods 
+
+        //Return object with shipment details
         public ShipmentDetailViewModel GetShipmentDetails(int shipmentID)
         {
             var detItem = _context.Shipments
@@ -219,6 +258,17 @@ namespace PPETracker.Services
             {
                 return false;
             }
+        }
+
+        public int GetNumItemsOnShipment(int shipmentID)
+        {
+            //get list of product IDs on shipment
+            var shipProducts = _context.ShipmentProducts
+                .Where(p => p.ShipmentID == shipmentID)
+                .Select(p => p.ID)
+                .ToList();
+
+            return shipProducts.Count;
         }
 
         //Change status of shipment to Shipped

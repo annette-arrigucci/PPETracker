@@ -16,7 +16,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ScheduledShipDate" class="control-label"></label>
-                <input type="text" name="ScheduledShipDate" id="scheduled-ship-date" class="form-control" value="@Model.ScheduledShipDate.ToString("MM/dd/yy")" />
+                <input type="text" name="ScheduledShipDate" id="scheduled-ship-date" class="form-control" value="@Model.ScheduledShipDate" />
                 <span asp-validation-for="ScheduledShipDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -29,14 +29,14 @@
             <div class="form-group">
                 <label asp-for="Comments" class="control-label"></label>
                 <textarea asp-for="Comments" class="form-control"></textarea>
-                <span asp-validation-for="Comments" class="text-danger"></span>
+                <span asp-validation-for="RecipientID" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label class="bold-label text-center">Available Products</label><br />
 
                 <label class="control-label">Filter by Category:</label>
-                <select asp-items="Model.CategoryList" id="categoryDropdown" style="margin-bottom: 20px;">
+                <select asp-items="@Model.CategoryList" id="categoryDropdown" style="margin-bottom: 20px;">
                     <option value="--All--" selected>--All--</option>
                 </select><br />
             </div>
