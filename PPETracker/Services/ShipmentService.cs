@@ -37,7 +37,7 @@ namespace PPETracker.Services
             return model;
         }
 
-        private List<ProductSelectionItem> InitializeProductSelection(List<ProductSummaryViewModel> prodList)
+        public List<ProductSelectionItem> InitializeProductSelection(List<ProductSummaryViewModel> prodList)
         {
             List<int> prodIDList = prodList.Select(p => p.ID).ToList();
             List<ProductSelectionItem> prodListToReturn = new List<ProductSelectionItem>();
@@ -67,7 +67,7 @@ namespace PPETracker.Services
             return recName;
         }
 
-        //TODO: Add Create Shipment method
+        //Add Create Shipment method
         public int CreateShipment(CreateShipmentCommand model)
         {
             Shipment shipmentToAdd = new Shipment
@@ -138,10 +138,12 @@ namespace PPETracker.Services
         public ShipmentDetailViewModel GetShipmentDetails(int shipmentID)
         {
             var detItem = _context.Shipments
+                .Where(p => p.ID == shipmentID)
                 .Select(p => new ShipmentDetailViewModel
                 {
                     ID = p.ID,
                     RecipientID = p.RecipientID,
+                    ShipStatus = p.ShipStatus,
                     ScheduledShipDate = p.ScheduledShipDate,
                     ActualShipDate = p.ActualShipDate,
                     Comments = p.Comments
@@ -152,7 +154,7 @@ namespace PPETracker.Services
             //look up product details
             //get list of products on shipment
             var shipProducts = _context.ShipmentProducts
-                .Where(p => p.ID == detItem.ID)
+                .Where(p => p.ShipmentID == detItem.ID)
                 .Select(p => new ProductSummaryForShipment { 
                     ID = p.ProductID,
                     QuantityOnShipment = p.Quantity
@@ -189,7 +191,7 @@ namespace PPETracker.Services
             }
             return resultList;
         }
-        //TODO: Add View all shipment records method
+        //Add View all shipment records method
 
         //check whether shipment ID is in table
         public bool IsShipmentIDValid(int shipmentID)
@@ -204,5 +206,66 @@ namespace PPETracker.Services
                 return true;
             }
         }
+
+        //check whether shipment has already shipped
+        public bool IsShipmentShipped(int shipmentID)
+        {
+            var result = _context.Shipments.Where(p => p.ID == shipmentID).Select(p => p.ShipStatus).FirstOrDefault();
+            if(result == "Y")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //Change status of shipment to Shipped
+        public void ChangeStatusToShipped(int shipmentID)
+        {
+            //find the shipment
+            var shipmentToShip = _context.Shipments.Where(p => p.ID == shipmentID).FirstOrDefault();
+            //change shipped status
+            shipmentToShip.ShipStatus = "Y";
+            //add shipping data
+            shipmentToShip.ActualShipDate = DateTime.Now;
+            _context.SaveChanges();
+        }
+
+        //Ship products on shipment - remove them from inventory
+        public void ShipProductsOnShipment(int shipmentID)
+        {
+            //find the shipment
+            var shipmentToShip = _context.Shipments.Where(p => p.ID == shipmentID).FirstOrDefault();
+            //find the shipment products to ship
+            var productsToShip = _context.ShipmentProducts.Where(p => p.ShipmentID == shipmentID).Select(p => p).ToList();
+
+            //for each product, update the quantity in the Products table
+            foreach(var product in productsToShip)
+            {
+                //get the current product quantity
+                var currentQuantity = _productService.GetProductQuantity(product.ProductID);
+
+                //get the quantity for shipment
+                var quantityForShipment = product.Quantity;
+
+                //subtract the quantity selected for shipment
+                var updatedQuantity = currentQuantity - quantityForShipment;
+
+                //throw error if invalid updated quantity
+                if(updatedQuantity < 0)
+                {
+                    //get product name
+                    var prodName = _productService.GetProductName(product.ProductID);
+                    throw new Exception("Error shipping " + prodName + ". Quantity selected for shipment exceeds what is available.");
+                }
+
+                //update the product quantity
+                _productService.UpdateProductQuantity(product.ProductID, updatedQuantity);
+            }
+            _context.SaveChanges();
+        }
+
     }
 }

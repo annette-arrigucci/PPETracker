@@ -48,9 +48,9 @@ namespace PPETracker.Controllers
         {
             //model Validations go here
             //check shipping date
-            if(model.ScheduledShipDate < DateTime.Today)
+            if(model.ScheduledShipDate < DateTime.Now.AddMonths(-6))
             {
-                ModelState.AddModelError("ScheduledShipDate", "Date cannot be before today's date");
+                ModelState.AddModelError("ScheduledShipDate", "Date cannot be older than six months ago");
             }
 
             //get the selected products from the list that was returned
@@ -65,6 +65,10 @@ namespace PPETracker.Controllers
 
             if (!ModelState.IsValid)
             {
+                model.AvailableProductList = _service.GetAvailableProducts();
+                model.ProductSelection = _shipService.InitializeProductSelection(model.AvailableProductList);
+                model.RecipientSelectionList = _shipService.GetRecipientList();
+                model.CategoryList = _catService.GetCategoryNamesList();
                 return View(model);
             }
             else
@@ -79,10 +83,11 @@ namespace PPETracker.Controllers
                 _shipService.CreateShipmentProductRecords(shipmentID, selectedProducts);
 
                 //Redirect to Shipments Dashboard
-                return RedirectToAction("Dashboard", "Products");
+                return RedirectToAction("Dashboard", "Shipments");
             }
         }
 
+        [HttpGet]
         public IActionResult Ship(int? shipmentID)
         {
             //check if shipment ID is valid
@@ -98,9 +103,32 @@ namespace PPETracker.Controllers
                 throw new Exception("Shipment ID not found");
             }
 
+            //check if shipment is already shipped
+            bool isShipped = _shipService.IsShipmentShipped((int)shipmentID);
+            if(isShipped == true)
+            {
+                throw new Exception("Error - shipment already shipped");
+            }
+
             //look up shipment details to display
             var model = _shipService.GetShipmentDetails((int)shipmentID);
             return PartialView("_Ship", model);
+        }
+
+        [HttpPost]
+        public IActionResult Ship(int ID)
+        {
+            //check if shipment ID is in table
+            bool isValid = _shipService.IsShipmentIDValid((int)ID);
+            if (isValid == false)
+            {
+                throw new Exception("Shipment ID not found");
+            }
+            //change the status of the shipment
+            _shipService.ChangeStatusToShipped(ID);
+            //ship the products in the shipment - remove them from the inventory
+            _shipService.ShipProductsOnShipment(ID);
+            return RedirectToAction("Dashboard", "Shipments");
         }
     }
 }

@@ -47,6 +47,29 @@ namespace PPETracker.Services
             return resultList;
         }
 
+        //Method to return list of products for dashboard
+        public List<ProductSummaryViewModel> GetAvailableProducts()
+        {
+            var results = _context.Products.Where(p => p.IsActive == true && p.Quantity > 0)
+                .Select(p => new ProductSummaryViewModel
+                {
+                    ID = p.ID,
+                    CategoryID = p.CategoryID,
+                    Name = p.Name,
+                    Brand = p.Brand,
+                    PhotoLink = p.PhotoLink,
+                    Quantity = p.Quantity
+                });
+            var resultList = results.ToList();
+            foreach (var r in resultList)
+            {
+                //look up category name
+                var categoryName = _categoryService.GetCategoryName(r.CategoryID);
+                r.CategoryName = categoryName;
+            }
+            return resultList;
+        }
+
         //Method to return list of deactivated products for dashboard
         public List<ProductSummaryViewModel> GetDeactivatedProducts()
         {
@@ -511,7 +534,7 @@ namespace PPETracker.Services
                     throw new Exception("Product not active");
                 }
 
-                //update the quantity
+                //return the quantity
                 return result.Quantity;
             }
             catch (Exception e)

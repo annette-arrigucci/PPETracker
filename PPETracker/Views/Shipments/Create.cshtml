@@ -66,7 +66,7 @@
                             <th>
                                 Quantity Available
                             </th>
-                            <th>NA</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +77,7 @@
                                     @Html.DisplayFor(modelItem => item.ID)
                                 </td>
                                 <td>
-                                    @*<img src="@item.PhotoLink" width="100" />*@
+                                    <img src="@item.PhotoLink" width="100" />
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
@@ -102,7 +102,7 @@
             </div>
         </div>
         <!--Table shows products selected-->
-        <div class="row" id="selected-ppe-item-table">
+        <div class="row" id="selected-ppe-item-table" style="margin-top: 25px;">
             <label class="bold-label text-center">Selected Products</label><br />
             <div class="col-sm-12">
                 <table class="table" id="selected-ppe-table" width="100%">
@@ -129,7 +129,7 @@
                             <th>
                                 Quantity Available
                             </th>
-                            <th>NA</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,7 +137,6 @@
                             <td>
                             </td>
                             <td>
-                                @*<img src="@item.PhotoLink" width="100" />*@
                             </td>
                             <td>
                             </td>
@@ -150,8 +149,6 @@
                             <td>
                             </td>
                             <td>
-                                @*<button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                    <button class="btn btn-info btn-responsive" id="addButton">Add</button>*@
                             </td>
                         </tr>
                     </tbody>
@@ -168,6 +165,7 @@
 
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
+            <a asp-action="Dashboard" asp-controller="Shipments" class="btn btn-secondary">Cancel</a>
         </div>
 </form>
 
@@ -228,13 +226,10 @@
 
                 var idNum = parseInt(col1);
 
-                $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><input type='button' class='remove' value='Remove'</td></tr> ");
+                $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td><img src='" + col2 + "' width='100' /></td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><input type='button' class='remove' value='Remove'</td></tr> ");
 
-                alert(idNum);
                 $("#" + idNum).next().val(1);
                 myVal = $("#" + idNum).next().val();
-                alert(myVal);
-
             });
 
             $("#selected-ppe-table tbody").on('change', '.quantityUpdate', function (event) {
@@ -262,10 +257,8 @@
                     $(this).val(prevQuantity);
                 }
                 else {
-                    alert(idNum);
                     $("#" + idNum).next().val(updatedValue);
                     myVal = $("#" + idNum).next().val();
-                    alert(myVal);
                 }
             });
 
@@ -285,10 +278,8 @@
 
                 var idNum = parseInt(col1);
 
-                alert(idNum);
                 $("#" + idNum).next().val(0);
                 myVal = $("#" + idNum).next().val();
-                alert(myVal);
 
                 //remove from selected table
                 currentRow.remove();

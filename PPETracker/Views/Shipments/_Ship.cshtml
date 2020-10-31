@@ -1,14 +1,14 @@
 ﻿@model PPETracker.ViewModels.ShipmentDetailViewModel
 
     <div class="modal fade" id="shipShipmentModal" tabindex="-1" role="dialog" aria-labelledby="shipShipmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form asp-controller="Shipment" asp-action="Ship" method="post" class="form-horizontal">
+                <form asp-controller="Shipments" asp-action="Ship" method="post" class="form-horizontal">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="modal-header">
-                        <h5 class="modal-title">Ship Shipment</h5>
+                        <h3 class="modal-title">Ship Shipment</h3>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">&times;s</span>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -39,32 +39,46 @@
                                         @Html.DisplayNameFor(model => model.ScheduledShipDate)
                                     </dt>
                                     <dd>
-                                        @Html.DisplayFor(model => model.ScheduledShipDate)
+                                        @Model.ScheduledShipDate.ToString("MM/dd/yy")
                                     </dd>
                                     <dt>
                                         @Html.DisplayNameFor(model => model.ActualShipDate)
                                     </dt>
                                     <dd>
-                                        @Html.DisplayFor(model => model.ActualShipDate)
+                                        @if (Model.ActualShipDate == null)
+                                        {
+                                            <br />
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.ActualShipDate)
+                                        }
                                     </dd>
                                     <dt>
                                         @Html.DisplayNameFor(model => model.Comments)
                                     </dt>
                                     <dd>
-                                        @Html.DisplayFor(model => model.Comments)
+                                        @if (Model.Comments == null)
+                                        {
+                                            <br />
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.Comments)
+                                        }
                                     </dd>
                                 </dl>
                             </div>
                             <div class="col-sm-6">
                                 <h4>Items on Shipment</h4>
-                                <table>
+                                <table class="table">
                                     <thead>
                                         <tr>
                                             <th>
-                                                Product ID
+                                                ID
                                             </th>
                                             <th>
-                                                Product Name
+                                                Name
                                             </th>
                                             <th>
                                                 Quantity
@@ -86,7 +100,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Ship Shipment</button>
+                        <button type="submit" class="btn btn-primary">Ship Shipment</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </form>
