@@ -47,10 +47,10 @@ namespace PPETracker.Services
             return resultList;
         }
 
-        //Method to return list of products for dashboard
-        public List<ProductSummaryViewModel> GetAvailableProducts()
+        //Method to return details on list of product IDs passed in
+        public List<ProductSummaryViewModel> GetAvailableProductDetailList(List<int> availableProductIDs)
         {
-            var results = _context.Products.Where(p => p.IsActive == true && p.Quantity > 0)
+            var results = _context.Products.Where(p => availableProductIDs.Contains(p.ID))
                 .Select(p => new ProductSummaryViewModel
                 {
                     ID = p.ID,
@@ -68,6 +68,44 @@ namespace PPETracker.Services
                 r.CategoryName = categoryName;
             }
             return resultList;
+        }
+
+        //get list of all available Product IDs
+        public List<int> GetAvailableProductIDs()
+        {
+            var results = _context.Products.Where(p => p.IsActive == true && p.Quantity > 0)
+                .Select(p => p.ID).ToList();
+            return results;
+        }
+
+        //Return a list of product summary objects for a list of selectedProducts
+        public List<ProductSummaryForShipment> GetSelectedProductDetailList(List<ProductSummaryForShipment> selectedProducts)
+        {
+            //for each object in the list, look up details
+            foreach(var prod in selectedProducts)
+            {
+                var result = _context.Products.Where(p => p.ID == prod.ID)
+                .Select(p => new 
+                {
+                    CategoryID = p.CategoryID,
+                    Name = p.Name,
+                    Brand = p.Brand,
+                    PhotoLink = p.PhotoLink,
+                    Quantity = p.Quantity
+                }).FirstOrDefault();
+
+                prod.CategoryID = result.CategoryID;
+                prod.Name = result.Name;
+                prod.Brand = result.Brand;
+                prod.PhotoLink = result.PhotoLink;
+                prod.Quantity = result.Quantity;
+
+                //get category name
+                var categoryName = _categoryService.GetCategoryName(prod.CategoryID);
+                prod.CategoryName = categoryName;
+            }
+            
+            return selectedProducts;
         }
 
         //Method to return list of deactivated products for dashboard

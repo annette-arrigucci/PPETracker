@@ -76,8 +76,15 @@ namespace PPETracker.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.AvailableProductList = _service.GetAvailableProducts();
-                model.ProductSelection = _shipService.InitializeProductSelection(model.AvailableProductList);
+                //get available product detail list
+                var allAvailableIDs = _service.GetAvailableProductIDs();
+                model.AvailableProductList = _service.GetAvailableProductDetailList(allAvailableIDs);
+
+                //get hidden all product list
+                //initialize product selection with empty selected list
+                List<ProductSelectionItem> selectedItems = new List<ProductSelectionItem>();
+                model.ProductSelection = _shipService.InitializeProductSelection(allAvailableIDs, selectedItems);
+                                
                 model.RecipientSelectionList = _shipService.GetRecipientList();
                 model.CategoryList = _catService.GetCategoryNamesList();
                 return View(model);
@@ -98,13 +105,31 @@ namespace PPETracker.Controllers
             }
         }
 
-        /*[HttpGet]
-        public IActionResult Edit(int shipmentID)
+        [HttpGet]
+        public IActionResult Edit(int? shipmentID)
         {
-            //don't allow edit if shipment has shipped
-            CreateShipmentCommand model = _shipService.GetEditModelWithProducts(shipmentID);
+            //check for null
+            if (shipmentID == null)
+            {
+                throw new Exception("Invalid shipment ID");
+            }
+            //check if shipment ID is in table
+            bool isValid = _shipService.IsShipmentIDValid((int)shipmentID);
+            if (isValid == false)
+            {
+                throw new Exception("Shipment ID not found");
+            }
+
+            //check if shipment is shipped
+            bool isShipped = _shipService.IsShipmentShipped((int)shipmentID);
+            if (isShipped == true)
+            {
+                throw new Exception("Error - cannot edit shipped shipment");
+            }
+
+            EditShipmentCommand model = _shipService.GetEditModelWithProducts((int)shipmentID);
             return View(model);
-        }*/
+        }
 
         /*[HttpPost]
         public IActionResult Edit(EditShipmentCommand model)

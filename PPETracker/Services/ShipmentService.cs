@@ -5,7 +5,6 @@ using PPETracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PPETracker.Services
 {
@@ -31,16 +30,20 @@ namespace PPETracker.Services
             //set ship date default to today
             model.ScheduledShipDate = DateTime.Now;
             model.AvailableProductList = availProducts;
-            model.ProductSelection = InitializeProductSelection(availProducts);
+            //get list of all available product IDs
+            List<int> allAvailable = _productService.GetAvailableProductIDs();
+            //no selected products for create, initialize with empty list
+            List<ProductSelectionItem> selectedProds = new List<ProductSelectionItem>();
+            model.ProductSelection = InitializeProductSelection(allAvailable, selectedProds);
             model.RecipientSelectionList = GetRecipientList();
             model.CategoryList = _categoryService.GetCategoryNamesList();
             return model;
         }
 
-       /*public EditShipmentCommand GetEditModelWithProducts(int shipmentID)
+       public EditShipmentCommand GetEditModelWithProducts(int shipmentID)
         {
             //get the existing shipment record
-            var editItem = _context.Shipments
+            var model = _context.Shipments
                 .Where(p => p.ID == shipmentID)
                 .Select(p => new EditShipmentCommand
                 {
@@ -61,29 +64,84 @@ namespace PPETracker.Services
                 })
                 .ToList();
             //translate the records into data that will be passed into the form
-            //get the lists needed to pass into the form
-            var products = _productService.GetProducts();
-            //only include products that are in stock
-            var availProducts = products.Where(p => p.Quantity > 0).ToList();
-            CreateShipmentCommand model = new CreateShipmentCommand();
-            //set ship date default to today
-            model.ScheduledShipDate = DateTime.Now;
-            model.AvailableProductList = availProducts;
-            model.ProductSelection = InitializeProductSelection(availProducts);
+            //get ProductSummaryViewModel lists - two lists
+            //selected products detail list for display in table
+            model.SelectedProductList = _productService.GetSelectedProductDetailList(shipProducts);
+
+            //available product detail list for display in table
+            //get details on non-selected products
+            //get all products, then filter those that are in stock and that are not on selected list
+            var allAvailableIDs = _productService.GetAvailableProductIDs();
+            //filter out products that are already selected
+            //get list of selected product IDs
+            var selectedIDs = shipProducts.Select(p => p.ID).ToList();
+            var nonSelectedIDs = allAvailableIDs.Except(selectedIDs).ToList();
+
+            //get details for non-selected items
+            model.AvailableProductList = _productService.GetAvailableProductDetailList(nonSelectedIDs);
+
+            //list of all products that can be selected for shipment to be on hidden form
+            var shipProdsWithQty = shipProducts.Select(p =>
+                new ProductSelectionItem
+                {
+                    ProductID = p.ID,
+                    QuantityForOrder = p.QuantityOnShipment
+                })
+                .ToList();
+            model.ProductSelection = InitializeProductSelection(allAvailableIDs, shipProdsWithQty);
             model.RecipientSelectionList = GetRecipientList();
             model.CategoryList = _categoryService.GetCategoryNamesList();
             return model;
-        }*/
+        }
 
-        public List<ProductSelectionItem> InitializeProductSelection(List<ProductSummaryViewModel> prodList)
+        //create a list of ProductSelectionItem objects to be used on a hidden form on the Create form
+        //set quantity for shipment to 0 on all
+        //available products list includes selected products
+        public List<ProductSelectionItem> InitializeProductSelection(List<int> availableProductIDs, List<ProductSelectionItem> selectedProdsWithQty)
         {
-            List<int> prodIDList = prodList.Select(p => p.ID).ToList();
+            //check whether there are selected products
+            bool hasSelectedProducts = selectedProdsWithQty.Count == 0 ? false : true;
+
+            //if there are no selected products, initialize all available products to quantity of 0
             List<ProductSelectionItem> prodListToReturn = new List<ProductSelectionItem>();
-            for(int i = 0; i < prodIDList.Count; i++)
+            //if there are selected products, set quantities for them based on what is in list
+            if(hasSelectedProducts == true)
             {
-                var prodSelectItem = new ProductSelectionItem { ProductID = prodIDList[i], QuantityForOrder = 0 };
-                prodListToReturn.Add(prodSelectItem);
+                //get a list of selected product IDs
+                List<int> selectedProdIDs = selectedProdsWithQty.Select(p => p.ProductID).ToList();
+                for (int i = 0; i < availableProductIDs.Count; i++)
+                {
+                    //search for product ID in selected items list
+                    if (selectedProdIDs.Contains(availableProductIDs[i]))
+                    {
+                        int quantityForSelection = selectedProdsWithQty
+                            .Where(p => p.ProductID == availableProductIDs[i])
+                            .Select(p => p.QuantityForOrder)
+                            .FirstOrDefault();
+
+                        var prodSelectItem = new ProductSelectionItem { 
+                            ProductID = availableProductIDs[i], 
+                            QuantityForOrder = quantityForSelection 
+                        };
+
+                        prodListToReturn.Add(prodSelectItem);
+                    }
+                    else
+                    {
+                        var prodSelectItem = new ProductSelectionItem { ProductID = availableProductIDs[i], QuantityForOrder = 0 };
+                        prodListToReturn.Add(prodSelectItem);
+                    }
+                }
             }
+            else
+            {
+                for (int i = 0; i < availableProductIDs.Count; i++)
+                {
+                    var prodSelectItem = new ProductSelectionItem { ProductID = availableProductIDs[i], QuantityForOrder = 0 };
+                    prodListToReturn.Add(prodSelectItem);
+                }
+            }
+            
             return prodListToReturn;
         }
 

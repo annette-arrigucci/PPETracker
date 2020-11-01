@@ -25,6 +25,8 @@ namespace PPETracker.ViewModels
 
         public string UserName { get; set; }
 
+        public List<ProductSummaryForShipment> SelectedProductList { get; set; }
+
         public List<ProductSummaryViewModel> AvailableProductList { get; set; }
         public List<ProductSelectionItem> ProductSelection { get; set; }
         public List<SelectListItem> RecipientSelectionList { get; set; }
