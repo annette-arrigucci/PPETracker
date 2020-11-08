@@ -40,7 +40,7 @@ namespace PPETracker.Services
             return model;
         }
 
-       public EditShipmentCommand GetEditModelWithProducts(int shipmentID)
+        public EditShipmentCommand GetEditModelWithProducts(int shipmentID)
         {
             //get the existing shipment record
             var model = _context.Shipments
@@ -94,6 +94,19 @@ namespace PPETracker.Services
             return model;
         }
 
+        public List<ProductSelectionItem> GetProductsOnShipment(int shipmentID)
+        {
+            var prodIDList = _context.ShipmentProducts
+                .Where(p => p.ShipmentID == shipmentID)
+                .Select(p => new ProductSelectionItem
+                {
+                    ProductID = p.ProductID,
+                    QuantityForOrder = p.Quantity
+                })
+                .ToList();
+            return prodIDList;
+        }
+
         //create a list of ProductSelectionItem objects to be used on a hidden form on the Create form
         //set quantity for shipment to 0 on all
         //available products list includes selected products
@@ -105,7 +118,7 @@ namespace PPETracker.Services
             //if there are no selected products, initialize all available products to quantity of 0
             List<ProductSelectionItem> prodListToReturn = new List<ProductSelectionItem>();
             //if there are selected products, set quantities for them based on what is in list
-            if(hasSelectedProducts == true)
+            if (hasSelectedProducts == true)
             {
                 //get a list of selected product IDs
                 List<int> selectedProdIDs = selectedProdsWithQty.Select(p => p.ProductID).ToList();
@@ -119,9 +132,10 @@ namespace PPETracker.Services
                             .Select(p => p.QuantityForOrder)
                             .FirstOrDefault();
 
-                        var prodSelectItem = new ProductSelectionItem { 
-                            ProductID = availableProductIDs[i], 
-                            QuantityForOrder = quantityForSelection 
+                        var prodSelectItem = new ProductSelectionItem
+                        {
+                            ProductID = availableProductIDs[i],
+                            QuantityForOrder = quantityForSelection
                         };
 
                         prodListToReturn.Add(prodSelectItem);
@@ -141,15 +155,16 @@ namespace PPETracker.Services
                     prodListToReturn.Add(prodSelectItem);
                 }
             }
-            
+
             return prodListToReturn;
         }
 
         //return list of all possible shipment recipients
         public List<SelectListItem> GetRecipientList()
         {
-            List<SelectListItem> recipientsList = _context.Recipients.Where(p => p.IsActive == true).Select(p => 
-                new SelectListItem { 
+            List<SelectListItem> recipientsList = _context.Recipients.Where(p => p.IsActive == true).Select(p =>
+                new SelectListItem
+                {
                     Text = p.Name,
                     Value = p.ID.ToString()
                 }).ToList();
@@ -163,7 +178,7 @@ namespace PPETracker.Services
             return recName;
         }
 
-        //Add Create Shipment method
+        //Create Shipment method
         public int CreateShipment(CreateShipmentCommand model)
         {
             Shipment shipmentToAdd = new Shipment
@@ -179,6 +194,24 @@ namespace PPETracker.Services
             return shipmentToAdd.ID;
         }
 
+        //Update Shipment method
+        public void UpdateShipment(EditShipmentCommand model)
+        {
+            try
+            {
+                Shipment shipmentToUpdate = _context.Shipments.Where(p => p.ID == model.ID).FirstOrDefault();
+                shipmentToUpdate.RecipientID = model.RecipientID;
+                shipmentToUpdate.ScheduledShipDate = model.ScheduledShipDate;
+                shipmentToUpdate.UserName = model.UserName;
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        //convert the list that was passed back from the model into a list of only products that the user selected
         public List<ProductSelectionItem> GetSelectedProducts(List<ProductSelectionItem> productQuantityList)
         {
             //get a list of all products that have quantity greater than zero
@@ -195,7 +228,7 @@ namespace PPETracker.Services
             foreach (var item in selectedProductList)
             {
                 string productValidMessage = _productService.IsProductIDValid(item.ProductID);
-                if(productValidMessage != "Active")
+                if (productValidMessage != "Active")
                 {
                     errorMessages.Add("Product ID " + item.ProductID + "cannot be added because it is " + productValidMessage + ". Please contact an administrator.");
                 }
@@ -204,9 +237,9 @@ namespace PPETracker.Services
                 //get available quantity for product
                 int quantityAvailable = _productService.GetProductQuantity(item.ProductID);
                 //if selected quantity exceeds what is available, add error message
-                if(item.QuantityForOrder > quantityAvailable)
+                if (item.QuantityForOrder > quantityAvailable)
                 {
-                    errorMessages.Add("Unable to ship " + item.QuantityForOrder + " of Product ID " + item.ProductID 
+                    errorMessages.Add("Unable to ship " + item.QuantityForOrder + " of Product ID " + item.ProductID
                         + ". There are " + quantityAvailable + " units of product available.");
                 }
             }
@@ -216,7 +249,7 @@ namespace PPETracker.Services
         //Add Create Shipment Product method
         public void CreateShipmentProductRecords(int shipmentID, List<ProductSelectionItem> prodSelectList)
         {
-            foreach(var item in prodSelectList)
+            foreach (var item in prodSelectList)
             {
                 ShipmentProduct shipProd = new ShipmentProduct
                 {
@@ -228,8 +261,39 @@ namespace PPETracker.Services
                 _context.SaveChanges();
             }
         }
-        //TODO: Add Edit Shipment methods
-        //TODO: Add Delete Shipment methods
+
+        //remove shipment product records each product ID in a list for a shipment
+        public void RemoveProductsFromShipment(int shipmentID, List<int> prodIDs)
+        {
+            foreach (var id in prodIDs)
+            {
+                var shipProdToRemove = _context.ShipmentProducts.Where(p => p.ShipmentID == shipmentID && p.ProductID == id).FirstOrDefault();
+                if (shipProdToRemove == null)
+                {
+                    throw new Exception("Product not found on shipment " + shipmentID);
+                }
+                else
+                {
+                    _context.ShipmentProducts.Remove(shipProdToRemove);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        //update quantity for a shipment product
+        public void UpdateShipmentProductQty(int shipmentID, int prodID, int qty)
+        {
+            var shipProdToUpdate = _context.ShipmentProducts.Where(p => p.ShipmentID == shipmentID && p.ProductID == prodID).FirstOrDefault();
+            if (shipProdToUpdate == null)
+            {
+                throw new Exception("Product not found on shipment " + shipmentID);
+            }
+            else
+            {
+                shipProdToUpdate.Quantity = qty;
+                _context.SaveChanges();
+            }
+        }
 
         //Return object with shipment details
         public ShipmentDetailViewModel GetShipmentDetails(int shipmentID)
@@ -252,14 +316,15 @@ namespace PPETracker.Services
             //get list of products on shipment
             var shipProducts = _context.ShipmentProducts
                 .Where(p => p.ShipmentID == detItem.ID)
-                .Select(p => new ProductSummaryForShipment { 
+                .Select(p => new ProductSummaryForShipment
+                {
                     ID = p.ProductID,
                     QuantityOnShipment = p.Quantity
                 })
                 .ToList();
 
             //for each product on shipment, get the product name
-            foreach(var prod in shipProducts)
+            foreach (var prod in shipProducts)
             {
                 prod.Name = _productService.GetProductName(prod.ID);
             }
@@ -294,7 +359,7 @@ namespace PPETracker.Services
         public bool IsShipmentIDValid(int shipmentID)
         {
             var result = _context.Shipments.Where(p => p.ID == shipmentID).FirstOrDefault();
-            if(result == null)
+            if (result == null)
             {
                 return false;
             }
@@ -308,7 +373,7 @@ namespace PPETracker.Services
         public bool IsShipmentShipped(int shipmentID)
         {
             var result = _context.Shipments.Where(p => p.ID == shipmentID).Select(p => p.ShipStatus).FirstOrDefault();
-            if(result == "Y")
+            if (result == "Y")
             {
                 return true;
             }
@@ -350,7 +415,7 @@ namespace PPETracker.Services
             var productsToShip = _context.ShipmentProducts.Where(p => p.ShipmentID == shipmentID).Select(p => p).ToList();
 
             //for each product, update the quantity in the Products table
-            foreach(var product in productsToShip)
+            foreach (var product in productsToShip)
             {
                 //get the current product quantity
                 var currentQuantity = _productService.GetProductQuantity(product.ProductID);
@@ -362,7 +427,7 @@ namespace PPETracker.Services
                 var updatedQuantity = currentQuantity - quantityForShipment;
 
                 //throw error if invalid updated quantity
-                if(updatedQuantity < 0)
+                if (updatedQuantity < 0)
                 {
                     //get product name
                     var prodName = _productService.GetProductName(product.ProductID);

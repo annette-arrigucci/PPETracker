@@ -48,9 +48,9 @@ namespace PPETracker.Services
         }
 
         //Method to return details on list of product IDs passed in
-        public List<ProductSummaryViewModel> GetAvailableProductDetailList(List<int> availableProductIDs)
+        public List<ProductSummaryViewModel> GetAvailableProductDetailList(List<int> productIDs)
         {
-            var results = _context.Products.Where(p => availableProductIDs.Contains(p.ID))
+            var results = _context.Products.Where(p => productIDs.Contains(p.ID))
                 .Select(p => new ProductSummaryViewModel
                 {
                     ID = p.ID,
@@ -78,7 +78,7 @@ namespace PPETracker.Services
             return results;
         }
 
-        //Return a list of product summary objects for a list of selectedProducts
+        //Take a list of ProductSummary objects with some data missing, return with full details
         public List<ProductSummaryForShipment> GetSelectedProductDetailList(List<ProductSummaryForShipment> selectedProducts)
         {
             //for each object in the list, look up details

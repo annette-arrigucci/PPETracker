@@ -1,33 +1,34 @@
-﻿@model PPETracker.ViewModels.CreateShipmentCommand
+﻿@model PPETracker.ViewModels.EditShipmentCommand
 
 @{
-    ViewData["Title"] = "Create Shipment";
+    ViewData["Title"] = "Edit Shipment";
 }
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
 <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
 
-<h1>Create Shipment</h1>
+<h1>Edit Shipment</h1>
 <hr />
-<form asp-action="Create">
+<form asp-action="Edit">
     <div class="row">
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="ID" type="hidden" />
             <div class="form-group">
-                <label asp-for="ScheduledShipDate" class="control-label bold-label"></label>
+                <label asp-for="ScheduledShipDate" class="control-label bold-label "></label>
                 <input type="text" name="ScheduledShipDate" id="scheduled-ship-date" class="form-control" value="@Model.ScheduledShipDate.ToString("MM/dd/yy")" />
                 <span asp-validation-for="ScheduledShipDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RecipientID" class="control-label bold-label"></label><br />
+                <label asp-for="RecipientID" class="control-label bold-label "></label><br />
                 <select asp-for="RecipientID" asp-items="Model.RecipientSelectionList">
-                    <option value="" disabled selected>--Select recipient--</option>
+                    <option value="" disabled>--Select recipient--</option>
                 </select><br />
                 <span asp-validation-for="RecipientID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Comments" class="control-label bold-label"></label>
+                <label asp-for="Comments" class="control-label bold-label "></label>
                 <textarea asp-for="Comments" class="form-control"></textarea>
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
@@ -42,131 +43,143 @@
             </div>
         </div>
     </div>
-        <!--div to hide/show table when category selected-->
-        <div class="row" id="available-ppe-item-table">
-            <div class="col-sm-12">
-                <table class="table" id="ppe-table" width="100%">
-                    <thead>
+    <!--div to hide/show table when category selected-->
+    <div class="row" id="available-ppe-item-table">
+        <div class="col-sm-12">
+            <table class="table" id="ppe-table" width="100%">
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Photo
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Brand
+                        </th>
+                        <th>
+                            Quantity Available
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.AvailableProductList)
+                    {
                         <tr>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Photo
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Category
-                            </th>
-                            <th>
-                                Brand
-                            </th>
-                            <th>
-                                Quantity Available
-                            </th>
-                            <th></th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ID)
+                            </td>
+                            <td>
+                                <img src="@item.PhotoLink" width="100" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Brand)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+                                <button class="btn btn-success btn-responsive" id="addButton">Add</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.AvailableProductList)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ID)
-                                </td>
-                                <td>
-                                    <img src="@item.PhotoLink" width="100" />
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CategoryName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Brand)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Quantity)
-                                </td>
-                                <td>
-                                    <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
-                                    <button class="btn btn-success btn-responsive" id="addButton">Add</button>
-                                </td>
-                            </tr>
-                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--Table shows products selected-->
+    <div class="row" id="selected-ppe-item-table" style="margin-top: 25px;">
+        <label class="bold-label text-center">Selected Products</label><br />
+        <div class="col-sm-12">
+            <table class="table" id="selected-ppe-table" width="100%">
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Photo
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Brand
+                        </th>
+                        <th>
+                            Quantity to Ship
+                        </th>
+                        <th>
+                            Quantity Available
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SelectedProductList)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ID)
+                        </td>
+                        <td>
+                            <img src="@item.PhotoLink" width="100" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Brand)
+                        </td>
+                        <td>
+                            <input type='text' class='quantityUpdate' value='@item.QuantityOnShipment' />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-responsive" onclick="ViewProductDetails('@item.ID')">Details</button>
+                            <button class="btn btn-danger btn-responsive remove">Remove</button>
+                        </td>
+                    </tr>
+                    }
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
-        <!--Table shows products selected-->
-        <div class="row" id="selected-ppe-item-table" style="margin-top: 25px;">
-            <label class="bold-label text-center">Selected Products</label><br />
-            <div class="col-sm-12">
-                <table class="table" id="selected-ppe-table" width="100%">
-                    <thead>
-                        <tr>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Photo
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Category
-                            </th>
-                            <th>
-                                Brand
-                            </th>
-                            <th>
-                                Quantity to Ship
-                            </th>
-                            <th>
-                                Quantity Available
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    </div>
 
-        <!--hidden form input-->
-        @for (int i = 0; i < Model.ProductSelection.Count; i++)
-        {
-            <input type="hidden" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" id="@Model.ProductSelection[i].ProductID" />
-            <input type="hidden" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
-        }
+    <!--hidden form input-->
+    @for (int i = 0; i < Model.ProductSelection.Count; i++)
+    {
+        <input type="hidden" name="ProductSelection[@i].ProductID" value="@Model.ProductSelection[i].ProductID" id="@Model.ProductSelection[i].ProductID" />
+        <input type="hidden" name="ProductSelection[@i].QuantityForOrder" value="@Model.ProductSelection[i].QuantityForOrder" />
+    }
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-success" />
-            <a asp-action="Dashboard" asp-controller="Shipments" class="btn btn-secondary">Cancel</a>
-        </div>
+    <div class="form-group">
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
+        <a asp-action="Dashboard" asp-controller="Shipments" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>
 
 <!-- Product details modal goes here -->
@@ -291,7 +304,7 @@
                     col4,
                     col5,
                     col6,
-                    "<button class='btn btn-info btn-responsive' onclick='ViewProductDetails(\"" +idNum+ "\")'>Details</button>"
+                    "<button class='btn btn-info btn-responsive' onclick='ViewProductDetails(\"" + idNum + "\")'>Details</button>"
                     + "<button class='btn btn-success btn-responsive' id='addButton'>Add</button>"
                 ]);
                 ppeTable.draw(false);

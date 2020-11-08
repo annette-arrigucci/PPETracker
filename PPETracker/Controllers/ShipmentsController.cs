@@ -131,7 +131,7 @@ namespace PPETracker.Controllers
             return View(model);
         }
 
-        /*[HttpPost]
+        [HttpPost]
         public IActionResult Edit(EditShipmentCommand model)
         {
             //model Validations go here
@@ -141,11 +141,11 @@ namespace PPETracker.Controllers
                 ModelState.AddModelError("ScheduledShipDate", "Date cannot be older than six months ago");
             }
 
-            //get the selected products from the list that was returned
-            List<ProductSelectionItem> selectedProducts = _shipService.GetSelectedProducts(model.ProductSelection);
+            //get the selected products from the updated shipment
+            List<ProductSelectionItem> selectedItems = _shipService.GetSelectedProducts(model.ProductSelection);
 
-            //check that each shipment product selection is valid
-            List<string> errorMessages = _shipService.CheckSelectedProducts(selectedProducts);
+            //check that each product selection is valid
+            List<string> errorMessages = _shipService.CheckSelectedProducts(selectedItems);
             foreach (var message in errorMessages)
             {
                 ModelState.AddModelError("", message);
@@ -153,27 +153,80 @@ namespace PPETracker.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.AvailableProductList = _service.GetAvailableProducts();
-                model.ProductSelection = _shipService.InitializeProductSelection(model.AvailableProductList);
+                //if not valid, need to pass back the available and selected lists for display and the hidden list that 
+                //stores what the user selected 
+                //initialize a list of ProductSummaryForShipment
+                List<ProductSummaryForShipment> prodSummaryList = new List<ProductSummaryForShipment>();
+                foreach (var item in selectedItems)
+                {
+                    //create a new ProductSummaryForShipment item
+                    var prodSummaryItem = new ProductSummaryForShipment
+                    {
+                        ID = item.ProductID,
+                        QuantityOnShipment = item.QuantityForOrder
+                    };
+                    prodSummaryList.Add(prodSummaryItem);
+                }
+                //for the list that was created, call method that will fill in product details for each item
+                model.SelectedProductList = _service.GetSelectedProductDetailList(prodSummaryList);
+
+                //get details for the available products to redisplay
+                var allAvailableIDs = _service.GetAvailableProductIDs();
+
+                //get list of selected product IDs
+                var selectedIDs = prodSummaryList.Select(p => p.ID).ToList();
+                var nonSelectedIDs = allAvailableIDs.Except(selectedIDs).ToList();
+
+                //get details for non-selected items
+                model.AvailableProductList = _service.GetAvailableProductDetailList(nonSelectedIDs);
+
                 model.RecipientSelectionList = _shipService.GetRecipientList();
                 model.CategoryList = _catService.GetCategoryNamesList();
                 return View(model);
             }
             else
             {
-                //Create the shipment
                 //get the username
                 model.UserName = User.Identity.Name;
 
-                //Get the shipment ID 
-                int shipmentID = _shipService.CreateShipment(model);
+                //update the shipment
+                _shipService.UpdateShipment(model);
 
-                _shipService.CreateShipmentProductRecords(shipmentID, selectedProducts);
+                //get the previously selected items on the shipment
+                List<ProductSelectionItem> prevSelectedItems = _shipService.GetProductsOnShipment(model.ID);
+
+                // get IDs of previously selected products
+                var prevSelectedIDs = prevSelectedItems.Select(p => p.ProductID).ToList();
+
+                //get a list of new product IDs that were added
+                var selectedIDs = selectedItems.Select(p => p.ProductID).ToList();
+
+                //add shipment content records for added products
+                var addedProductIDs = selectedIDs.Except(prevSelectedIDs).ToList();
+
+                //get Product Selection Item objects for added products
+                List<ProductSelectionItem> addedList = selectedItems.Where(p => addedProductIDs.Contains(p.ProductID)).ToList();
+
+                _shipService.CreateShipmentProductRecords(model.ID, addedList);
+
+                //get items to remove
+                var prodsToRemove = prevSelectedIDs.Except(selectedIDs).ToList();
+
+                //for each previously selected item, check if the quantity changed in the new selection
+                foreach(var item in prevSelectedItems)
+                {
+                    int oldQuant = item.QuantityForOrder;
+                    var updateItem = selectedItems.Where(p => p.ProductID == item.ProductID).FirstOrDefault();
+                    if(item.QuantityForOrder != updateItem.QuantityForOrder)
+                    {
+                        _shipService.UpdateShipmentProductQty(model.ID, item.ProductID, updateItem.QuantityForOrder);
+                    }
+                }
 
                 //Redirect to Shipments Dashboard
                 return RedirectToAction("Dashboard", "Shipments");
             }
-        }*/
+        }
 
         [HttpGet]
         public IActionResult Ship(int? shipmentID)
