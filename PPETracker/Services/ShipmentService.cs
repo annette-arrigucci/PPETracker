@@ -262,7 +262,7 @@ namespace PPETracker.Services
             }
         }
 
-        //remove shipment product records each product ID in a list for a shipment
+        //remove shipment product records for each product ID in a list for a shipment
         public void RemoveProductsFromShipment(int shipmentID, List<int> prodIDs)
         {
             foreach (var id in prodIDs)
@@ -353,7 +353,6 @@ namespace PPETracker.Services
             }
             return resultList;
         }
-        //Add View all shipment records method
 
         //check whether shipment ID is in table
         public bool IsShipmentIDValid(int shipmentID)
@@ -437,6 +436,14 @@ namespace PPETracker.Services
                 //update the product quantity
                 _productService.UpdateProductQuantity(product.ProductID, updatedQuantity);
             }
+            _context.SaveChanges();
+        }
+
+        //delete shipment record
+        public void DeleteShipment(int shipmentID)
+        {
+            var shipmentToDelete = _context.Shipments.Where(p => p.ID == shipmentID).FirstOrDefault();
+            _context.Shipments.Remove(shipmentToDelete);
             _context.SaveChanges();
         }
 

@@ -308,7 +308,16 @@ namespace PPETracker.Controllers
             {
                 throw new Exception("Shipment ID not found");
             }
-            //TODO: add delete method here
+
+            //get shipment product records
+            var shipProdList = _shipService.GetProductsOnShipment(ID);
+            var shipProdIDList = shipProdList.Select(p => p.ProductID).ToList();
+
+            //delete shipment product records
+            _shipService.RemoveProductsFromShipment(ID, shipProdIDList);
+
+            //delete shipment
+            _shipService.DeleteShipment(ID);
 
             //redirect to dashboard
             return RedirectToAction("Dashboard", "Shipments");
