@@ -351,6 +351,7 @@ namespace PPETracker.Services
                 var recName = GetRecipientName(r.RecipientID);
                 r.RecipientName = recName;
             }
+            resultList = resultList.OrderByDescending(p => p.ScheduledShipDate).ToList();
             return resultList;
         }
 

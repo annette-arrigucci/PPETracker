@@ -239,7 +239,7 @@
 
                 var idNum = parseInt(col1);
 
-                $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td><img src='" + col2 + "' width='100' /></td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><button class='btn btn-info btn-responsive' onclick='ViewProductDetails(\"" + idNum + "\")'>Details</button><button class='btn btn-danger btn-responsive remove'>Remove</button></td></tr> ");
+                $("#selected-ppe-table").append("<tr><td>" + col1 + "</td><td>" + col2 + "</td><td>" + col3 + "</td><td>" + col4 + "</td><td>" + col5 + "</td><td><input type='text' class='quantityUpdate' value='1'></td><td>" + col6 + "</td><td><button class='btn btn-info btn-responsive' onclick='ViewProductDetails(\"" + idNum + "\")'>Details</button><button class='btn btn-danger btn-responsive remove'>Remove</button></td></tr> ");
 
                 $("#" + idNum).next().val(1);
                 myVal = $("#" + idNum).next().val();
